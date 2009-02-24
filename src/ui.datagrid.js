@@ -189,6 +189,25 @@
         }
     };
     
+    $.ui.datagrid.plugins.resizable = {
+        _init: function() {
+            this.options = $.extend({resizable: true}, this.options);
+        },
+        _ready: function() {
+            var widget = this;
+            if (widget.options.resizable) {
+                widget.ui.wrapper.resizable({
+                    ghost: true,
+                    minWidth:  widget.options.width,
+                    stop: function() {
+                        $.log();
+                        $('table', this).width($(this).width()).height($(this).height());
+                    }
+                });
+            }
+        }
+    };
+    
     $.ui.datagrid.plugins.colhider = {
         _init: function() {
             this.options = $.extend({colhider: true}, this.options);
