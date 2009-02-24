@@ -32,8 +32,16 @@
             PERIOD: 190, RIGHT: 39, SHIFT: 16, SPACE: 32, TAB: 9, UP: 38
         },
         
+        // Takes a keyboard event and return true if the keycode match the specified keycode
         keyIs: function(k, e) {
             return parseInt($.keyCode[k.toUpperCase()], 10) == parseInt((typeof(e) == 'number' )? e: e.keyCode, 10);
+        },
+        
+        // Returns the key of an array
+        keys: function(arr) {
+            var o = [];
+            for (k in arr) { o.push(k); }
+            return o;
         },
 
         // Redirect to a specified url
