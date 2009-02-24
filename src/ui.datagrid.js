@@ -37,15 +37,25 @@
             this.ui.wrapper = $(el).addClass('ui-datagrid')
                                 .width(this.options.width)
                                 .data('datagrid', this)
-                                .bind('refresh.datagrid',   this._events.refresh)
-                                .bind('refreshed.datagrid', this._events.refreshed);
+                                .bind('refresh.datagrid',   this._events.refresh);
 
             this.ui.table = $.tpl('datagrid.table')
                               .width(this.options.width)
                               .appendTo(this.ui.wrapper);
 
+            this._pluginsCall('_init');
             this._createDatagridHeader();
             this._createDatagridBody();
+            this._pluginsCall('_ready');
+            this.ui.wrapper.trigger('refresh');
+        },
+
+        _pluginsCall: function(method, args){
+            for (x in $.ui.datagrid.plugins) {
+                try {
+                    $.ui.datagrid.plugins[x][method].apply(this, args || []);
+                } catch(e) {};
+            }
         },
 
         _createDatagridHeader: function(){
@@ -61,7 +71,6 @@
         _createDatagridBody: function() {
             var widget = this;
             this.ui.body  = this.ui.table.find('tbody');
-            this.ui.wrapper.trigger('refresh');
         },
 
         _createDatagridRow: function(id, cells) {
@@ -108,9 +117,11 @@
                 $(this).data('datagrid')._loadData();
             },
 
-            refreshed: function(){
-                       
-            }
+            refreshed: function(){}
+        },
+        
+        bind: function(eName, callback) {      
+            return this.ui.wrapper.bind(eName, callback);
         }
     });
 
@@ -134,9 +145,6 @@
         },
         width: function(el, cell){ 
             el.css('width', cell.width);
-        },
-        sortable: function(el, cell){ 
-            if (el.get(0).nodeName == 'TH') { el.addClass('ui-sortable'); }
         },
         hide: function(el, cell){ 
             if (cell.hide) { el.hide(); }
@@ -166,6 +174,45 @@
         dataType: 'json',
         onError: function(xr, ts, et) {
             try { $.log(xr, ts, et); } catch (e) {};
+        }
+    };
+
+    $.ui.datagrid.plugins = {};
+    /*
+    $.ui.datagrid.plugins.sortable = {
+        _init: function() {
+            $.ui.datagrid.defaults.sortable = true;
+            $.ui.datagrid.cellModifiers.sortable = function(el, cell){ 
+                if (el.get(0).nodeName == 'TH') { el.addClass('ui-sortable'); }
+            }
+        },
+        _ready: function() {
+        }
+    };
+    $.ui.datagrid.plugins.refresh = {
+        _init: function() {
+            $.ui.datagrid.defaults.refresh = true;
+        },
+        _ready: function() {
+            $('<div class="ui-datagrid-p-refresh">x</div>')
+                .appendTo(this.ui.wrapper);
+        }
+    };
+    */
+    
+    $.ui.datagrid.plugins.ledger = {
+        _init: function() {
+            $.ui.datagrid.defaults.ledger = true;
+        },
+        _ready: function() {
+            var widget = this;
+            widget.bind('refreshed.ledger', function() {
+                var i = 0;
+                widget.ui.body.find('tr').each(function(){
+                    $(this).addClass(i % 2 && 'odd' || 'even');
+                    i++;
+                });
+            });
         }
     };
 })(jQuery);
