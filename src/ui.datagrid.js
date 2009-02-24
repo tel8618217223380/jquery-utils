@@ -178,10 +178,9 @@
     };
 
     $.ui.datagrid.plugins = {};
-    /*
     $.ui.datagrid.plugins.sortable = {
         _init: function() {
-            $.ui.datagrid.defaults.sortable = true;
+            this.options = $.extend({sortable: true}, this.options);
             $.ui.datagrid.cellModifiers.sortable = function(el, cell){ 
                 if (el.get(0).nodeName == 'TH') { el.addClass('ui-sortable'); }
             }
@@ -189,20 +188,52 @@
         _ready: function() {
         }
     };
-    $.ui.datagrid.plugins.refresh = {
+    
+    $.ui.datagrid.plugins.colhider = {
         _init: function() {
-            $.ui.datagrid.defaults.refresh = true;
+            this.options = $.extend({colhider: true}, this.options);
         },
         _ready: function() {
-            $('<div class="ui-datagrid-p-refresh">x</div>')
-                .appendTo(this.ui.wrapper);
+            var widget = this;
+            if (widget.options.colhider) {
+                widget.ui.colhiderlist = $('<ul class="ui-datagrid-p-colhider-list ui-helper-hidden" />').prependTo(widget.ui.wrapper);
+                for (x in widget.options.cols) {
+                    var checked = (typeof(widget.options.cols[x].hide) == 'undefined')? 'checked="checked"': '';
+                    $($.format('<li><label><input id="col-{id:d}" type="checkbox" {checked:s} /> {label:s}</label></li>', {id: x, label: widget.options.cols[x].label, checked: checked}))
+                        .bind('change.colhider', function(){
+                            if ($('input:checked', widget.ui.colhiderlist).length >= 1) {
+                                var ck = $('input', this).attr('checked');
+                                var id = parseInt($('input', this).attr('id').match(/\d+/gi)[0], 10) + 1;
+                                $('tr th:nth-child('+ id +')', widget.ui.header)[ck && 'show' || 'hide']();
+                                $('tr td:nth-child('+ id +')', widget.ui.body)[ck && 'show' || 'hide']();
+                                $('tr td', widget.ui.body).attr('colspan', 1).filter(':last-child').attr('colspan', 2);
+                            }
+                            else {
+                                $('input', this).attr('checked', true);
+                            }
+                            widget.ui.colhiderlist.hide();
+                        })
+                        .appendTo(widget.ui.colhiderlist);
+                }
+                $('<th class="ui-datagrid-p-colhider">&nbsp;</th>')
+                    .appendTo(widget.ui.header.find('tr'))
+                    .bind('click.colhider', function() {
+                        widget.ui.colhiderlist.css({
+                            top: widget.ui.body.position().top,
+                            left: $(this).position().left
+                        }).toggle();
+                    });
+                widget.bind('refreshed.colhider', function(){
+                    $('tbody tr td:last-child', this).attr('colspan', 2);
+                });
+            }
         }
     };
-    */
+    
     
     $.ui.datagrid.plugins.ledger = {
         _init: function() {
-            $.ui.datagrid.defaults.ledger = true;
+            this.options = $.extend({ledger: true}, this.options);
         },
         _ready: function() {
             var widget = this;
