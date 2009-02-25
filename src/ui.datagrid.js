@@ -239,7 +239,10 @@
                 widget.ui.colhiderlist = $('<ul class="ui-datagrid-p-colhider-list ui-helper-hidden" />').prependTo(widget.ui.wrapper);
                 for (x in widget.options.cols) {
                     var checked = (typeof(widget.options.cols[x].hide) == 'undefined')? 'checked="checked"': '';
-                    $($.format('<li><label><input id="col-{id:d}" type="checkbox" {checked:s} /> {label:s}</label></li>', {id: x, label: widget.options.cols[x].label, checked: checked}))
+
+                    $($.format('<li class="ui-corner-all"><label><input id="col-{id:d}" type="checkbox" {c:s} /> {l:s}</label></li>', {id: x, l: widget.options.cols[x].label, c: checked}))
+                        .hover(function(){ $(this).addClass('ui-state-hover');}, 
+                               function(){ $(this).removeClass('ui-state-hover'); })
                         .bind('change.colhider', function(){
                             if ($('input:checked', widget.ui.colhiderlist).length >= 1) {
                                 var ck = $('input', this).attr('checked');

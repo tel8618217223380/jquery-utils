@@ -26,6 +26,9 @@
 .ui-datagrid table thead th.ui-sortable {
     cursor:pointer;
 }
+.ui-datagrid table thead th.ui-sortable div {
+    margin-right:16px; /* We don't want cols label to overlap the sort button */
+}
 .ui-datagrid table thead th .ui-icon {
     float:right;
     height:15px;
@@ -71,4 +74,17 @@
 }
 .ui-datagrid-p-colhider-list li {
     list-style:none;
+    border:1px solid ThreeDFace;
+}
+.ui-datagrid-p-colhider-list li.ui-state-hover {
+    border-color:ThreeDShadow;
+}
+
+.ui-datagrid-p-colhider-list li label {
+    display:block;
+    height:20px;
+    line-height:2.4em;
+}
+.ui-datagrid-p-colhider-list li label input {
+    float:left;
 }
