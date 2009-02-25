@@ -13,14 +13,14 @@
                 //$('#test-1').timepickr({trigger: '#trigger-test'});
                 $('#demo-1').datagrid({
                     url: 'data/datagrid-test.json',
-                    colhider: false,
+                    colhider: true,
                     resizable: false,
                     cols: [
-                        {label: 'ISO',  name: 'iso',  width: 40,   sortable: true, align: 'center'},
-                        {label: 'Name', name: 'name', width : 180, sortable: true, align: 'left', hide: true},
-                        {label: 'Printable Name', name: 'printable_name', width : 120, sortable : true, align: 'left'},
-                        {label: 'ISO3', name: 'iso3', width : 130, sortable: true, align: 'left', hide: true},
-                        {label: 'Number Code', name: 'numcode', width: 80, sortable: true, align: 'left'}
+                        {label: 'ISO',  name: 'iso',  width: 40, sortable: true, align: 'center'},
+                        {label: 'Name', name: 'name', width: 40, sortable: true, align: 'left', hide: true},
+                        {label: 'Printable Name', name: 'printable_name', width: 40, sortable : true, align: 'left'},
+                        {label: 'ISO3', name: 'iso3', width: 40, sortable: true, align: 'left', hide: true},
+                        {label: 'Number Code', name: 'numcode', width: 40, sortable: true, align: 'left'}
                     ]
                 });
             });
@@ -44,65 +44,6 @@
         <div id="demo-1"></div>
         <h3>Basic usage</h3>
         <pre></pre>
-        <style type="text/css">
-        .ui-datagrid {
-            background:#ddd;
-            border:1px solid #ccc;
-            margin:40px;
-        }
-        .ui-datagrid table {
-            margin:0;padding:0;
-            background:#ddd;
-        }
-        .ui-datagrid table thead th {
-            font-size:70%;
-            font-weight:normal;
-            background-color:ThreeDFace;
-            color:ButtonText;
-            border-width:1px;
-            border-color:ThreeDHighlight  ThreeDShadow ThreeDShadow ThreeDLightShadow;
-            border-style:solid;
-            padding:4px;
-        }
-        .ui-datagrid table thead th:last-child {
-            border-right:0;
-        }
-        .ui-datagrid table tbody {}
-        .ui-datagrid table tbody tr {}
-        .ui-datagrid table tbody tr td {
-            background-color:ThreeDHighlight;
-            font-size:80%;
-            font-weight:normal;
-            color:ButtonText;
-            border:0;
-            padding:4px;
-        }
-        .ui-datagrid table tbody tr.odd td {
-            background-color:ThreeDLightShadow;
-        
-        }
-        .ui-datagrid table tfoot {}
-        .ui-datagrid-p-colhider {
-            background:ThreeDFace url(../src/img/datagrid/colhider.png) no-repeat 50% 50%;
-            width:6px;
-        }
-        .ui-datagrid-p-colhider-list {
-            margin:0;padding:0;
-            position:absolute;
-            font-size:70%;
-            font-weight:normal;
-            background-color:ThreeDFace;
-            color:ButtonText;
-            border-width:1px;
-            border-color:ThreeDHighlight  ThreeDShadow ThreeDShadow ThreeDLightShadow;
-            border-style:solid;
-            padding:4px;
-            width:120px;
-        }
-        .ui-datagrid-p-colhider-list li {
-            list-style:none;
-        }
-        </style>
     </body>
 </html>
 

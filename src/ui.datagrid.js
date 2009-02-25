@@ -19,7 +19,7 @@
     var debug = true;
     $.log = debug && console.log || function(){};
     
-    $.tpl('datagrid.table',   '<table cellpadding="0" cellspacing="0" summary=""><thead /><tbody /><tfoot /></table>');
+    $.tpl('datagrid.table',   '<table class="ui-widget" cellpadding="0" cellspacing="0" summary=""><thead /><tbody /><tfoot /></table>');
     $.tpl('datagrid.toolbar', '<div class="ui-datagrid-toolbar" />');
     $.tpl('datagrid.pager',   '<div class="ui-datagrid-pager" />');
     $.tpl('datagrid.search',  '<div class="ui-datagrid-search" />');
@@ -31,6 +31,11 @@
             $(this.element).each(function(){
                 widget._createDatagrid(this);
             });
+        },
+        _fixCellInex: 1,
+        _fixCellWidth: function() {
+            var $ths = $('th:visible', this.ui.header);
+            $ths.eq($ths.length - this._fixCellInex).css('width', 'auto');
         },
 
         _createDatagrid: function(el){
@@ -88,7 +93,8 @@
             var el  = $($.format('<{0:s}><div /></{0:s}>', type || 'td'));
             for (x in mod) {
                 try {
-                    $.ui.datagrid.cellModifiers[mod[x]].apply(this, [el, cell]);
+                    $.ui.datagrid.cellModifiers[mod[x]]
+                        .apply(this, [el, cell, type && type.toLowerCase() || 'td']);
                 } catch(e) {
                     $.log('[ui.datagrid.js] Unknown cell modifier: %s', mod[x]);
                 }
@@ -114,7 +120,9 @@
         _events: {
 
             refresh: function(e){
-                $(this).data('datagrid')._loadData();
+                $widget = $(this).data('datagrid');
+                $widget._fixCellWidth();
+                $widget._loadData();
             },
 
             refreshed: function(){}
@@ -134,6 +142,7 @@
      *
      *  @el    object[jQuery]   Actual cell element enclosed in a jQuery instance
      *  @cell  object           Cell options (specified with widget.options.cols)
+     *  @type  string           Node type of the cell ("td" or "th") 
      *
      * */
     $.ui.datagrid.cellModifiers = {
@@ -143,8 +152,8 @@
         align: function(el, cell){
             el.find('div').andSelf().css('text-align', cell.align);
         },
-        width: function(el, cell){ 
-            el.css('width', cell.width);
+        width: function(el, cell, type){ 
+            if (type == 'th') { el.css('width', cell.width); }
         },
         hide: function(el, cell){ 
             if (cell.hide) { el.hide(); }
@@ -180,15 +189,26 @@
     $.ui.datagrid.plugins = {};
     $.ui.datagrid.plugins.sortable = {
         _init: function() {
-            this.options = $.extend({sortable: true}, this.options);
-            $.ui.datagrid.cellModifiers.sortable = function(el, cell){ 
-                if (el.get(0).nodeName == 'TH') { el.addClass('ui-sortable'); }
+            widget = this;
+            widget.options = $.extend({sortable: true}, widget.options);
+            $.ui.datagrid.cellModifiers.sortable = function(el, cell, type){ 
+                if (type == 'th') { 
+                    el.addClass('ui-sortable ui-state-default')
+                        .hover(function(){ $(this).addClass('ui-state-hover');}, 
+                               function(){ $(this).removeClass('ui-state-hover'); })
+                        .bind('click.sortable', function() {
+                            $(this).removeClass('ui-state-default').addClass('ui-tabs-selected ui-state-active')
+                                .siblings().removeClass('ui-tabs-selected ui-state-active').addClass('ui-state-default');
+
+                        });
+                    $('<span class="ui-unsorted ui-icon ui-icon-triangle-2-n-s" />').prependTo(el); 
+                }
             }
         },
         _ready: function() {
         }
     };
-    
+    /*
     $.ui.datagrid.plugins.resizable = {
         _init: function() {
             this.options = $.extend({resizable: true}, this.options);
@@ -200,13 +220,13 @@
                     ghost: true,
                     minWidth:  widget.options.width,
                     stop: function() {
-                        $.log();
                         $('table', this).width($(this).width()).height($(this).height());
                     }
                 });
             }
         }
     };
+    */
     
     $.ui.datagrid.plugins.colhider = {
         _init: function() {
@@ -215,6 +235,7 @@
         _ready: function() {
             var widget = this;
             if (widget.options.colhider) {
+                widget._fixCellInex = widget._fixCellInex + 1;
                 widget.ui.colhiderlist = $('<ul class="ui-datagrid-p-colhider-list ui-helper-hidden" />').prependTo(widget.ui.wrapper);
                 for (x in widget.options.cols) {
                     var checked = (typeof(widget.options.cols[x].hide) == 'undefined')? 'checked="checked"': '';
@@ -234,14 +255,19 @@
                         })
                         .appendTo(widget.ui.colhiderlist);
                 }
-                $('<th class="ui-datagrid-p-colhider">&nbsp;</th>')
-                    .appendTo(widget.ui.header.find('tr'))
+
+                $('<th class="ui-datagrid-p-colhider ui-state-default"><span class="ui-icon ui-icon-gridmenu" /></th>').width(16)
                     .bind('click.colhider', function() {
                         widget.ui.colhiderlist.css({
                             top: widget.ui.body.position().top,
                             left: $(this).position().left
                         }).toggle();
-                    });
+                    })
+                    .hover(function(){ $(this).addClass('ui-state-hover');}, 
+                           function(){ $(this).removeClass('ui-state-hover'); 
+                    }).appendTo(widget.ui.header.find('tr'));
+                    
+
                 widget.bind('refreshed.colhider', function(){
                     $('tbody tr td:last-child', this).attr('colspan', 2);
                 });
