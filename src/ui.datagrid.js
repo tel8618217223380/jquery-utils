@@ -249,7 +249,8 @@
                                 var id = parseInt($('input', this).attr('id').match(/\d+/gi)[0], 10) + 1;
                                 $('tr th:nth-child('+ id +')', widget.ui.header)[ck && 'show' || 'hide']();
                                 $('tr td:nth-child('+ id +')', widget.ui.body)[ck && 'show' || 'hide']();
-                                $('tr td', widget.ui.body).attr('colspan', 1).filter(':last-child').attr('colspan', 2);
+                                $('tr td', widget.ui.body).attr('colspan', 1).filter(':last-child:visible').attr('colspan', 2);
+                                $widget._fixCellWidth();
                             }
                             else {
                                 $('input', this).attr('checked', true);
