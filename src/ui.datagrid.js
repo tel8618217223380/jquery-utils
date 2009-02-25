@@ -25,6 +25,11 @@
     $.tpl('datagrid.search',  '<div class="ui-datagrid-search" />');
 
     $.widget('ui.datagrid', {
+        params: {},
+        bind: function(eName, callback) {      
+            return this.ui.wrapper.bind(eName, callback);
+        },
+
         _init: function() {
             var widget = this;
             this.ui = {};
@@ -32,17 +37,17 @@
                 widget._createDatagrid(this);
             });
         },
-        _fixCellInex: 1,
+        _fixCellIndex: 1,
         _fixCellWidth: function() {
             var $ths = $('th:visible', this.ui.header);
-            $ths.eq($ths.length - this._fixCellInex).css('width', 'auto');
+            $ths.eq($ths.length - this._fixCellIndex).css('width', 'auto');
         },
 
         _createDatagrid: function(el){
             this.ui.wrapper = $(el).addClass('ui-datagrid')
                                 .width(this.options.width)
                                 .data('datagrid', this)
-                                .bind('refresh.datagrid',   this._events.refresh);
+                                .bind('refresh.datagrid', $.ui.datagrid.events.refresh);
 
             this.ui.table = $.tpl('datagrid.table')
                               .width(this.options.width)
@@ -78,7 +83,7 @@
             this.ui.body  = this.ui.table.find('tbody');
         },
 
-        _createDatagridRow: function(id, cells) {
+        _createRow: function(id, cells) {
             var tr = $('<tr />');
             for (i in cells) {
                 var cell = this.options.cols[i]; var label = cell.label; cell.label = cells[i];
@@ -115,23 +120,17 @@
                 },
                 error: widget.options.onError
             });
-        },
-         
-        _events: {
-
-            refresh: function(e){
-                $widget = $(this).data('datagrid');
-                $widget._fixCellWidth();
-                $widget._loadData();
-            },
-
-            refreshed: function(){}
-        },
-        
-        bind: function(eName, callback) {      
-            return this.ui.wrapper.bind(eName, callback);
         }
     });
+    
+    $.ui.datagrid.events = {
+        refresh: function(e){
+            widget = $(this).data('datagrid');
+            widget._fixCellWidth();
+            widget._loadData();
+        },
+        refreshed: function(){}
+    };
 
     /* cellModifiers are used extend cell options
      *
@@ -170,7 +169,7 @@
         json: function(data) {
             for (r in data.rows) {
                 try {
-                    this._createDatagridRow(data.rows[r].id, data.rows[r].cell);
+                    this._createRow(data.rows[r].id, data.rows[r].cell);
                 } catch(e) {};
             }
         }
@@ -178,7 +177,6 @@
 
     $.ui.datagrid.defaults = {
         width:    500,
-        height:   500,
         method:   'get',
         dataType: 'json',
         onError: function(xr, ts, et) {
@@ -191,6 +189,7 @@
         _init: function() {
             widget = this;
             widget.options = $.extend({sortable: true}, widget.options);
+            widget.params  = $.extend({sortname: '', sortorder: 'asc'});
             $.ui.datagrid.cellModifiers.sortable = function(el, cell, type){ 
                 if (type == 'th') { 
                     el.addClass('ui-sortable ui-state-default')
@@ -235,7 +234,7 @@
         _ready: function() {
             var widget = this;
             if (widget.options.colhider) {
-                widget._fixCellInex = widget._fixCellInex + 1;
+            widget._fixCellIndex = widget._fixCellIndex + 1;
                 widget.ui.colhiderlist = $('<ul class="ui-datagrid-p-colhider-list ui-helper-hidden" />').prependTo(widget.ui.wrapper);
                 for (x in widget.options.cols) {
                     var checked = (typeof(widget.options.cols[x].hide) == 'undefined')? 'checked="checked"': '';
@@ -250,7 +249,7 @@
                                 $('tr th:nth-child('+ id +')', widget.ui.header)[ck && 'show' || 'hide']();
                                 $('tr td:nth-child('+ id +')', widget.ui.body)[ck && 'show' || 'hide']();
                                 $('tr td', widget.ui.body).attr('colspan', 1).filter(':last-child:visible').attr('colspan', 2);
-                                $widget._fixCellWidth();
+                                widget._fixCellWidth();
                             }
                             else {
                                 $('input', this).attr('checked', true);
