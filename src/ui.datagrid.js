@@ -79,7 +79,6 @@
         },
 
         _createDatagridBody: function() {
-            var widget = this;
             this.ui.body  = this.ui.table.find('tbody');
         },
 
@@ -103,6 +102,9 @@
                 } catch(e) {
                     $.log('[ui.datagrid.js] Unknown cell modifier: %s', mod[x]);
                 }
+            }
+            if (type == 'th') {
+                el.addClass('ui-sortable ui-state-default');
             }
             return el;
         },
@@ -208,8 +210,8 @@
             widget.options = $.extend({sortable: true}, widget.options);
             widget.params  = $.extend({sortname: '', sortorder: 'asc'});
             $.ui.datagrid.cellModifiers.sortable = function(el, cell, type){ 
-                if (type == 'th') { 
-                    el.addClass('ui-sortable ui-state-default')
+                if (type == 'th' && cell.sortable) { 
+                    el.addClass('ui-sortable')
                         .hover(function(){ $(this).addClass('ui-state-hover');}, 
                                function(){ $(this).removeClass('ui-state-hover'); })
                         .bind('click.sortable', function() {
