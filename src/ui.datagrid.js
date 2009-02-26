@@ -107,6 +107,23 @@
             return el;
         },
 
+        _visibleCol: function(index, excludeHeader) {
+            // There is most likely a more efficient way to achieve this..
+            var $tds = $(this.ui.body.find('tr').map(function(){
+                return $(this).find('td:visible').get(index);
+            }));
+            return excludeHeader 
+                    && $tds
+                    || $(this.ui.header.find('tr').map(function(){
+                           return $(this).find('th:visible').get(index);
+                       })).add($tds);
+        },
+
+        _col: function(index, excludeHeader) {
+            return this.ui.header.find('th:nth-child('+ (index+1) +')')
+                    .add(this.ui.body.find('td:nth-child('+ (index+1) +')'));
+        },
+
         _loadData: function() {
             var widget = this;
             $.ajax({
@@ -244,16 +261,16 @@
                                function(){ $(this).removeClass('ui-state-hover'); })
                         .bind('change.colhider', function(){
                             if ($('input:checked', widget.ui.colhiderlist).length >= 1) {
-                                var ck = $('input', this).attr('checked');
-                                var id = parseInt($('input', this).attr('id').match(/\d+/gi)[0], 10) + 1;
-                                $('tr th:nth-child('+ id +')', widget.ui.header)[ck && 'show' || 'hide']();
-                                $('tr td:nth-child('+ id +')', widget.ui.body)[ck && 'show' || 'hide']();
-                                $('tr td', widget.ui.body).attr('colspan', 1).filter(':last-child:visible').attr('colspan', 2);
+                                var id  = parseInt($('input', this).attr('id').match(/\d+/gi)[0], 10);
+                                widget.ui.body.find('td').attr('colspan', 1);
+                                widget._col(id)[$('input', this).attr('checked') && 'show' || 'hide']();
+                                widget._visibleCol(widget.ui.body.find('tr:eq(0) td:visible').length-1, true).attr('colspan', 2);
                                 widget._fixCellWidth();
                             }
                             else {
                                 $('input', this).attr('checked', true);
                             }
+                            widget._fixCellWidth();
                             widget.ui.colhiderlist.hide();
                         })
                         .appendTo(widget.ui.colhiderlist);
@@ -272,7 +289,7 @@
                     
 
                 widget.bind('refreshed.colhider', function(){
-                    $('tbody tr td:last-child', this).attr('colspan', 2);
+                    $('tbody tr td:visible', this).filter(':last-child').attr('colspan', 2);
                 });
             }
         }
@@ -286,11 +303,9 @@
         _ready: function() {
             var widget = this;
             widget.bind('refreshed.ledger', function() {
-                var i = 0;
-                widget.ui.body.find('tr').each(function(){
-                    $(this).addClass(i % 2 && 'odd' || 'even');
-                    i++;
-                });
+                widget.ui.body.find('tr')
+                    .filter(':odd').addClass('odd').end()
+                    .filter(':even').addClass('even');
             });
         }
     };
