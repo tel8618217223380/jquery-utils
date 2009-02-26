@@ -141,69 +141,71 @@
             });
         }
     });
-    
-    $.ui.datagrid.events = {
-        refresh: function(e){
-            widget = $(this).data('datagrid');
-            widget._fixCellWidth();
-            widget._loadData();
-        },
-        refreshed: function(){}
-    };
 
-    /* cellModifiers are used extend cell options
-     *
-     * Modifiers must be functions scoped with the datagrid widget.
-     * So "this" refers to the current instance of datagrid (usually refered as "widget")
-     *
-     * Modifiers will recieve the following arguments:
-     *
-     *  @el    object[jQuery]   Actual cell element enclosed in a jQuery instance
-     *  @cell  object           Cell options (specified with widget.options.cols)
-     *  @type  string           Node type of the cell ("td" or "th") 
-     *
-     * */
-    $.ui.datagrid.cellModifiers = {
-        label: function(el, cell){
-            el.find('div').text(cell.label);
+    // These properties are shared accross every instances of datagrid
+    $.extend($.ui.datagrid, {
+        plugins: {},
+        defaults: {
+            width:    500,
+            method:   'get',
+            dataType: 'json',
+            onError: function(xr, ts, et) {
+                try { $.log(xr, ts, et); } catch (e) {};
+            }
         },
-        align: function(el, cell){
-            el.find('div').andSelf().css('text-align', cell.align);
+        events: {
+            refreshed: function(){},
+            refresh: function(e){
+                widget = $(this).data('datagrid');
+                widget._fixCellWidth();
+                widget._loadData();
+            }
         },
-        width: function(el, cell, type){ 
-            if (type == 'th') { el.css('width', cell.width); }
-        },
-        hide: function(el, cell){ 
-            if (cell.hide) { el.hide(); }
-        }
-    };
 
-    /* parsers are used to extend data types (json/xml/..)
-     *
-     * the parser are basically callback function for jQuery.ajax's onSuccess
-     * http://docs.jquery.com/Ajax/jQuery.ajax#options
-     *
-     * */
-    $.ui.datagrid.parsers = {
-        json: function(data) {
-            for (r in data.rows) {
-                try {
-                    this._createRow(data.rows[r].id, data.rows[r].cell);
-                } catch(e) {};
+        /* parsers are used to extend data types (json/xml/..)
+         * the parser are basically callback function for jQuery.ajax's onSuccess
+         * http://docs.jquery.com/Ajax/jQuery.ajax#options
+         * */
+        parsers: {
+            json: function(data) {
+                for (r in data.rows) {
+                    try {
+                        this._createRow(data.rows[r].id, data.rows[r].cell);
+                    } catch(e) {};
+                }
+            }
+        },
+
+        /* cellModifiers are used extend cell options
+         *
+         * Modifiers must be functions scoped with the datagrid widget.
+         * So "this" refers to the current instance of datagrid (usually refered as "widget")
+         *
+         * Modifiers will recieve the following arguments:
+         *
+         *  @el    object[jQuery]   Actual cell element enclosed in a jQuery instance
+         *  @cell  object           Cell options (specified with widget.options.cols)
+         *  @type  string           Node type of the cell ("td" or "th") 
+         *
+         * */
+        cellModifiers: {
+            label: function(el, cell){
+                el.find('div').text(cell.label);
+            },
+            align: function(el, cell){
+                el.find('div').andSelf().css('text-align', cell.align);
+            },
+            width: function(el, cell, type){ 
+                if (type == 'th') { el.css('width', cell.width); }
+            },
+            hide: function(el, cell){ 
+                if (cell.hide) { el.hide(); }
             }
         }
-    };
+    });
 
-    $.ui.datagrid.defaults = {
-        width:    500,
-        method:   'get',
-        dataType: 'json',
-        onError: function(xr, ts, et) {
-            try { $.log(xr, ts, et); } catch (e) {};
-        }
-    };
+    /* -- Plugins -- */
 
-    $.ui.datagrid.plugins = {};
     $.ui.datagrid.plugins.sortable = {
         _init: function() {
             widget = this;
@@ -296,7 +298,30 @@
             }
         }
     };
-    
+
+    $.ui.datagrid.plugins.selectable = {
+        _init: function() {
+            this.options = $.extend({selectable: true}, this.options);
+        },
+        _ready: function() {
+            var widget = this;
+            if (widget.options.selectable) {
+                widget.bind('refreshed.selectable', function() {
+                    widget.ui.body.find('tr').bind('click.selectable', function(){
+                        if ($(this).hasClass('ui-selected')) {
+                            $(this).removeClass('ui-selected');
+                        }
+                        else if (widget.options.selectable == 2) {
+                            $(this).addClass('ui-selected');
+                        }
+                        else {
+                            $(this).addClass('ui-selected').siblings().removeClass('ui-selected');
+                        }
+                    });
+                });
+            }
+        }
+    };
     
     $.ui.datagrid.plugins.ledger = {
         _init: function() {

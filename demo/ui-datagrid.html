@@ -13,8 +13,9 @@
                 //$('#test-1').timepickr({trigger: '#trigger-test'});
                 $('#demo-1').datagrid({
                     url: 'data/datagrid-test.json',
-                    colhider: true,
+                    colhider: false,
                     resizable: false,
+                    selectable: 2,
                     cols: [
                         {label: 'ISO',  name: 'iso',  width: 40, sortable: false, align: 'center'},
                         {label: 'Name', name: 'name', width: 40, sortable: true, align: 'left', hide: true},

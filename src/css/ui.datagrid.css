@@ -48,7 +48,9 @@
 }
 .ui-datagrid table tbody tr.odd td {
     background-color:ThreeDLightShadow;
-
+}
+.ui-datagrid table tbody tr.ui-selected td {
+    background-color:#def;
 }
 .ui-datagrid table tfoot {}
 .ui-datagrid-p-colhider {
