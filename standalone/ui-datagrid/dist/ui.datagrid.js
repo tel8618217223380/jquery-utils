@@ -1,5 +1,5 @@
 /*
-  jQuery utils - 0.6.5
+  jQuery utils - 0.0.1
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -517,564 +517,195 @@
     $.extend(strings);
 })(jQuery);
 /*
-  jQuery array utils - 0.1
+  jQuery ui.datagrid - 0.0.1
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
   http://haineault.com
 
   MIT License (http://www.opensource.org/licenses/mit-license.php
-
-*/
-
-(function($){
-    
-    var dummy      = function(i) { return i; };
-    var truthiness = function(i) { return !!i; };
-
-    $.extend({
-
-        all: function(object, iterator){
-            var output   = true;
-            var iterator = iterator || truthiness;
-            $.each(object, function(idx, i){
-                if (!iterator(i)) { output = false; }
-            });
-            return output;
-        },
-
-        any: function(object, iterator){
-            var output   = false;
-            var iterator = iterator || truthiness;
-            $.each(object, function(idx, i){
-                return iterator(i) && !(output = true) || true;
-            });
-            return output;
-        },
-
-        // equivalent of array.find
-        detect: function(object, iterator){
-            var output   = false;
-            var iterator = iterator || truthiness;
-            $.each(object, function(idx, i){
-                //return iterator(i) && !(output = i) || true;
-                if (iterator(i)) { 
-                    output = i; 
-                    return false;
-                }
-            });      
-            return output;
-        },
-
-        eachSlice: function(object, size, iterator){
-            var index = - size, slices = [];
-            while ((index += size) < object.length){ 
-                slices.push($.map(object.slice(index, index + size), iterator || dummy)); 
-            } 
-            return slices;
-        },
-
-        inject: function(object, acc, iterator){
-            $.each(object, function (idx, val) {
-                acc = iterator(acc, val, idx);
-            }); 
-            return acc;
-        },
-
-        invoke: function(object, method, args){
-            $.each(object, function(){
-                if ($.isFunction(method)){
-                    method.apply(object, args);
-                }
-                else if ($.isFunction(window[method])){
-                    window[method].apply(object, args);
-                }
-            });
-            return object;
-        },
-
-        max: function(object, iterator) {
-            var output = false; 
-            $.each(object, function (idx, val) {
-                var rs = (iterator || dummy)(val, idx);
-                if (!output || rs > output) { output = rs; }
-            }); 
-            return output;
-        },
-
-        min: function(object, iterator) {
-            var output = false; 
-            $.each(object, function (idx, val) {
-                var rs = (iterator || dummy)(val, idx);
-                if (!output || rs < output) { output = rs; }
-            }); 
-            return output;
-        },
-
-        partition: function(object, iterator) {
-            var trues = [], falses = []; 
-            $.each(object, function (idx, val) {
-                ((iterator || truthiness)(val, idx) ? trues : falses).push(val);
-            }); 
-            return [trues, falses];
-        },
-        
-        pluck: function(object, property, iterator) {
-            var output = [];
-            var iterator = iterator || dummy;
-            $.each(object, function(){
-                // "||this" is required to make IE behave like FF on simple arrays .. 
-                output.push(iterator(this[property]||this));
-            });
-            return output;
-        },
-/*
-        reject: function(object, iterator){
-            return $.select(object, (iterator || function(i){ return !i; }));
-        },
-
-        // findAll equivalent
-        select: function(object, iterator){
-            var output   = [];
-            var iterator = iterator || truthiness;
-            $.each(object, function(idx, i){
-                if (iterator(i)) { 
-                    output.push(i); 
-                }
-            });
-            return output;
-        },
-*/
-
-        sum: function(object, iterator){
-            var iterator = iterator || function(i) { return parseInt(i, 10) };
-            var t = 0;
-            $.each(object, function(){
-                var v = iterator(this);
-                if (!isNaN(v)) { t = t + v; }
-            });
-            return t;
-        },
-
-        zip: function(object, object2, iterator) {
-            var output = [];
-            var iterator = iterator || dummy;
-            $.each(object, function(idx, i){
-                if (object2[idx]) { output.push([i, object2[idx]]); }
-            });
-            return output;
-        },
-
-        // Randomize an array object with the Fisher-Yates algorythm
-        // Author: Ashley Pond V. (http://sedition.com/perl/javascript-fy.html)
-        randomize: function(object) {  
-            var i = object.length;
-            if (i == 0) return false;
-            while (--i) {
-               var j = Math.floor( Math.random() * ( i + 1 ) );
-               var tempi = object[i];
-               var tempj = object[j];
-               object[i] = tempj;
-               object[j] = tempi;
-             }
-            return object;
-        },
-
-        // Returns a range object
-        // Author: Matthias Miller
-        // Site:   http://blog.outofhanwell.com/2006/03/29/javascript-range-function/
-        range:  function() {
-            if (!arguments.length) { return []; }
-            var min, max, step;
-            if (arguments.length == 1) {
-                min  = 0;
-                max  = arguments[0]-1;
-                step = 1;
-            }
-            else {
-                // default step to 1 if it's zero or undefined
-                min  = arguments[0];
-                max  = arguments[1]-1;
-                step = arguments[2] || 1;
-            }
-            // convert negative steps to positive and reverse min/max
-            if (step < 0 && min >= max) {
-                step *= -1;
-                var tmp = min;
-                min = max;
-                max = tmp;
-                min += ((max-min) % step);
-            }
-            var a = [];
-            for (var i = min; i <= max; i += step) { a.push(i); }
-            return a;
-        }
-    });
-
-    $.extend($.fn, {
-        all:       function(iterator) { return $.all(this, iterator); },
-        any:       function(iterator) { return $.any(this, iterator); },
-        pluck:     function(property, iterator) { return $.pluck(this, property, iterator); },
-        detect:    function(iterator) { return $($.detect(this, iterator)); },
-        eachSlice: function(size, iterator) { return $.eachSlice(this, size, iterator); },
-        //select:    function(iterator) { return $.findAll(this, iterator); },
-        sum: function(iterator) {
-            var iterator = iterator || function(i) {
-                return parseFloat($(i).val() || $(i).text(), 10);
-            };
-            return $.sum(this, iterator);
-        }
-    });
-})(jQuery);
-/*
-  jQuery ui.dropslide - 0.4
-  http://code.google.com/p/jquery-utils/
-
-  (c) Maxime Haineault <haineault@gmail.com> 
-  http://haineault.com
-
-  MIT License (http://www.opensource.org/licenses/mit-license.php
-
-*/
-
-(function($) {
-    $.widget('ui.dropslide', $.extend({}, $.ui.mouse, {
-        getter: 'showLevel showNextLevel getSelection',
-        _init: function() {
-            var widget   = this;
-            var next     = this.element.next();
-            this.wrapper = next.hasClass('ui-dropslide') && next || this.options.tree;
-
-            this.element.bind(this.options.trigger +'.dropslide', function(){
-                widget.show();
-            });
-
-            this.wrapper
-                .addClass('ui-reset ui-component')
-                .data('dropslide', this)
-                .css({width:this.options.width})
-                .find('li, li ol li')
-                    .bind('mouseover.dropslide', function(e){
-                        $(this).siblings().removeClass('hover')
-                            .find('ol').hide().end()
-                            .find('span').removeClass('ui-hover-state').end();
-                        $(this).find('ol').show().end().addClass('hover').children(0).addClass('ui-hover-state');
-                        widget.showNextLevel();
-                    })
-                   .bind('click.dropslide', function(e){
-                        $(widget.element).triggerHandler('dropslideclick', [e, widget], widget.options.click); 
-                        $(widget.element).triggerHandler('select', [e, widget], widget.options.select); 
-                    }).end()
-                .find('ol')
-                    .bind('mousemove.dropslide', function(e){
-                       return widget._redraw();
-                    })
-                   .addClass('ui-widget ui-helper-clearfix ui-helper-reset')
-                   .hide().end()
-                .find('span').addClass('ui-state-default ui-corner-all');
-
-            this._redraw();
-        },
-
-        // show specified level, id is the DOM position
-        showLevel: function(id) {
-            var ols = this.wrapper.find('ol');
-            var ds  = this;
-            if (id == 0) {            
-                ols.eq(0).css('left', this.element.position().left);
-                this.wrapper.css('top', ds.element.position().top + ds.element.height() + ds.options.top);
-                this.wrapper.css('z-index', 1000);
-            }
-            setTimeout(function() {
-                ols.removeClass('active').eq(id).addClass('active').show(ds.options.animSpeed);
-            }, ds.options.showDelay);
-        },
-
-        // guess what it does
-        showNextLevel: function() {
-            this.wrapper.find('ol.active')
-                .removeClass('active')
-                .next('ol').addClass('active').show(this.options.animSpeed);
-        },
-
-        getSelection: function(level) {
-            return level 
-                    && this.wrapper.find('ol').eq(level).find('li span.ui-hover-state')
-                    || $.makeArray(this.wrapper.find('span.ui-hover-state').map($.iterators.getText));
-        },
-
-        // essentially reposition each ol
-        _redraw: function() {
-            var prevLI ,prevOL, nextOL, pos = false;
-            var offset = this.element.position().left + this.options.left;
-            var ols    = $(this.wrapper).find('ol');
-
-            $(this.wrapper).css({
-                top: this.element.position().top + this.element.height() + this.options.top,
-                left: this.element.position().left
-            });
-            
-            // reposition each ol
-            ols.each(function(i) {
-                prevOL = $(this).prevAll('ol:visible:first');
-                // without the try/catch I often get a 
-                // Error: "Could not convert JavaScript argument arg 0 ..."
-                try {
-                    if (prevOL.get(0)) {
-                        prevLI = prevOL.find('li.hover, li:first').eq(0);
-                        $(this).css('margin-left', prevLI.position().left);
-                    }
-                } catch(e) {};
-            });
-        },
-
-        // show level 0 (shortcut)
-        show: function(e) {
-            this.showLevel(0);
-        },
-
-        // hide all levels
-        hide: function() {
-            var widget = this;
-            setTimeout(function() {
-                widget.wrapper.find('ol').hide();
-            }, widget.options.hideDelay);
-        },
-
-        activate: function(e) {
-            this.element.focus();
-            this.show(this.options.animSpeed);
-        },
-                  
-        destroy: function(e) {
-            this.wrapper.remove();
-        }
-    }));
-
-    $.ui.dropslide.defaults = {
-        // options
-        tree:      false,
-        trigger:   'mouseover',
-        top:       6,
-        left:      0,
-        showDelay: 0,
-        hideDelay: 0,
-        animSpeed: 0,
-        // events
-        select:  function() {},
-        click:   function(e, ui) { ui.hide(); }
-    };
-})(jQuery);
-/*
-  jQuery ui.timepickr - 0.6.5
-  http://code.google.com/p/jquery-utils/
-
-  (c) Maxime Haineault <haineault@gmail.com> 
-  http://haineault.com
-
-  MIT License (http://www.opensource.org/licenses/mit-license.php
-
-  Note: if you want the original experimental plugin checkout the rev 224 
 
   Dependencies
   ------------
   - jquery.utils.js
   - jquery.strings.js
-  - jquery.arrayUtils.js
   - jquery.ui.js
-  - ui.dropslide.js
 
-  // Could do something interesting with this..
-  U+25F4  ◴  White circle with upper left quadrant
-  U+25F5  ◵  White circle with lower left quadrant
-  U+25F6  ◶  White circle with lower right quadrant
-  U+25F7  ◷  White circle with upper right quadrant
-  
 */
 
 (function($) {
-    $.widget('ui.timepickr', {
+    var debug = true;
+    
+    $.tpl('datagrid.table',   '<table class="ui-widget" cellpadding="0" cellspacing="0" summary=""><thead /><tbody /><tfoot /></table>');
+    $.tpl('datagrid.toolbar', '<div class="ui-datagrid-toolbar" />');
+    $.tpl('datagrid.pager',   '<div class="ui-datagrid-pager" />');
+    $.tpl('datagrid.search',  '<div class="ui-datagrid-search" />');
+
+    $.widget('ui.datagrid', {
+        params: {},
+        bind: function(eName, callback) {      
+            return this.ui.wrapper.bind(eName, callback);
+        },
+
         _init: function() {
-            var menu    = this._buildMenu();
-            var element = this.element;
-            element.data('timepickr.initialValue', element.val());
-            menu.insertAfter(this.element);
-            element
-                .addClass('ui-timepickr')
-                .dropslide(this.options.dropslide)
-                .bind('select', this.select);
-            
-            element.blur(function(e) {
-                $(this).dropslide('hide');
-                $(this).val($(this).data('timepickr.initialValue'));
+            var widget = this;
+            this.ui = {};
+            $(this.element).each(function(){
+                widget._createDatagrid(this);
             });
+        },
+        _fixCellIndex: 1,
+        _fixCellWidth: function() {
+            var $ths = $('th:visible', this.ui.header);
+            $ths.eq($ths.length - this._fixCellIndex).css('width', 'auto');
+        },
 
-            if (this.options.val) {
-                element.val(this.options.val);
+        _createDatagrid: function(el){
+            this.ui.wrapper = $(el).addClass('ui-datagrid')
+                                .width(this.options.width)
+                                .data('datagrid', this)
+                                .bind('refresh.datagrid', $.ui.datagrid.events.refresh);
+
+            this.ui.table = $.tpl('datagrid.table')
+                              .width(this.options.width)
+                              .appendTo(this.ui.wrapper);
+
+            this._pluginsCall('_init');
+            this._createDatagridHeader();
+            this._createDatagridBody();
+            this._pluginsCall('_ready');
+            this.ui.wrapper.trigger('refresh');
+        },
+
+        _pluginsCall: function(method, args){
+            for (x in $.ui.datagrid.plugins) {
+                try {
+                    $.ui.datagrid.plugins[x][method].apply(this, args || []);
+                } catch(e) {};
             }
+        },
 
-            if (this.options.handle) {
-                $(this.options.handle).click(function() {
-                    $(element).dropslide('show');
-                });
+        _createDatagridHeader: function(){
+            var widget = this;
+            var tr = $('<tr />');
+            this.ui.header = this.ui.table.find('thead');
+            for (x in this.options.cols) {
+                tr.append(widget._createCell(this.options.cols[x], 'th'));
             }
+            this.ui.header.append(tr);
+        },
 
-            if (this.options.resetOnBlur) {
-                menu.find('li > span').bind('mousedown.timepickr', function(){
-                    $(element).data('timepickr.initialValue', $(element).val()); 
-                });
+        _createDatagridBody: function() {
+            this.ui.body  = this.ui.table.find('tbody');
+        },
+
+        _createRow: function(id, cells) {
+            var tr = $('<tr />');
+            for (i in cells) {
+                var cell = this.options.cols[i]; var label = cell.label; cell.label = cells[i];
+                tr.append(this._createCell(cell, 'td'));
+                cell.label = label; // I manually cache/restore the object's label to avoid having to clone it for each cells
             }
+            tr.appendTo(this.ui.body);
+        },
 
-            if (this.options.updateLive) {
-                menu.find('li').bind('mouseover.timepickr', function() {
-                    $(element).timepickr('update'); 
-                });
+        _createCell: function(cell, type, modifiers) {
+            var mod = modifiers || $.keys($.ui.datagrid.cellModifiers);
+            var el  = $($.format('<{0:s}><div /></{0:s}>', type || 'td'));
+            for (x in mod) {
+                try {
+                    $.ui.datagrid.cellModifiers[mod[x]]
+                        .apply(this, [el, cell, type && type.toLowerCase() || 'td']);
+                } catch(e) {}
             }
-
-            var hrs = menu.find('ol:eq(1)').find('li:first').addClass('hover').find('span').addClass('ui-hover-state').end().end();
-            var min = menu.find('ol:eq(2)').find('li:first').addClass('hover').find('span').addClass('ui-hover-state').end().end();
-            var sec = menu.find('ol:eq(3)').find('li:first').addClass('hover').find('span').addClass('ui-hover-state').end().end();
-
-            if (this.options.convention === 24) {
-                var day        = menu.find('ol:eq(0) li:eq(0)');
-                var night      = menu.find('ol:eq(0) li:eq(1)');
-                var dayHours   = hrs.find('li').slice(0, 12);
-                var nightHours = hrs.find('li').slice(12, 24);
-                var index      = 0;
-                var selectHr   = function(id) {
-                    hrs.find('li').removeClass('hover');
-                    hrs.find('span').removeClass('ui-hover-state');
-                    hrs.find('li').eq(id).addClass('hover').find('span').addClass('ui-hover-state')
-                };
-
-                day.mouseover(function() {
-                    nightHours.hide();
-                    dayHours.show(0);
-                    index = hrs.find('li.hover').data('id') || hrs.find('li:first').data('id');
-                    selectHr(index > 11 && index - 12 || index);
-                    element.dropslide('redraw');
-                });
-
-                night.mouseover(function() {
-                    dayHours.hide();
-                    nightHours.show(0);
-                    index = hrs.find('li.hover').data('id') || hrs.find('li:first').data('id');
-                    selectHr(index < 12 && index + 12 || index);
-                    element.dropslide('redraw');
-                });
+            if (type == 'th') {
+                el.addClass('ui-state-default');
             }
-            element.dropslide('redraw');
-            element.data('timepickr', this);
+            return el;
         },
 
-        update: function() {
-            var frmt = this.options.convention === 24 && 'format24' || 'format12';
-            var val = {
-                h: this.getValue('hour'),
-                m: this.getValue('minute'),
-                s: this.getValue('second'),
-                prefix: this.getValue('prefix'),
-                suffix: this.getValue('suffix')
-            };
-            var o = $.format(this.options[frmt], val);
-
-            $(this.element).val(o);
+        _visibleCol: function(index, excludeHeader) {
+            // There is most likely a more efficient way to achieve this..
+            var $tds = $(this.ui.body.find('tr').map(function(){
+                return $(this).find('td:visible').get(index);
+            }));
+            return excludeHeader 
+                    && $tds
+                    || $(this.ui.header.find('tr').map(function(){
+                           return $(this).find('th:visible').get(index);
+                       })).add($tds);
         },
 
-        select: function(e) {
-            var dropslide = $(this).data('dropslide');
-            $(dropslide.element).timepickr('update');
-            e.stopPropagation();
+        _col: function(index, excludeHeader) {
+            return this.ui.header.find('th:nth-child('+ (index+1) +')')
+                    .add(this.ui.body.find('td:nth-child('+ (index+1) +')'));
         },
 
-        getHour: function() {
-            return this.getValue('hour');
-        },
-
-        getMinute: function() {
-            return this.getValue('minute');
-        },
-
-        getSecond: function() {
-            return this.getValue('second');
-        },
-
-        getValue: function(type) {
-            return $('.ui-timepickr.'+ type +'.hover', this.element.next()).text();
-        },
-        
-        activate: function() {
-            this.element.dropslide('activate');
-        },
-
-        destroy: function() {
-            this.element.dropslide('destroy');
-        },
-        
-        /* UI private methods */
-        
-        _createButton: function(i, format, className) {
-            var o  = format && $.format(format, i) || i;
-            var cn = className && 'ui-timepickr '+ className || 'ui-timepickr';
-            return $('<li />').addClass(cn).data('id', i).append($('<span />').text(o));
-        },
-
-        _createRow: function(range, format, className) {
-            var row = $('<ol class="ui-timepickr" />');
-            var button = this._createButton;
-            // Thanks to Christoph Müller-Spengler for the bug report
-            $.each(range, function(idx, val){
-                row.append(button(val, format || false, className || false));
+        _loadData: function() {
+            var widget = this;
+            $.ajax({
+                type:       widget.options.method,
+                url:        widget.options.url,
+                data:       '', // params,
+                dataType:   widget.options.dataType,
+                success:    function(){ 
+                    $.ui.datagrid.parsers[widget.options.dataType].apply(widget, arguments); 
+                    widget.ui.wrapper.trigger('refreshed')
+                },
+                error: widget.options.onError
             });
-            return row;
-        },
-        
-        _getRanges12: function() {
-            var o = [], opt = this.options;
-            if (opt.hours)   { o.push(this._createRow($.range(1, 13), '{0:0.2d}', 'hour')); }
-            if (opt.minutes) { o.push(this._createRow(opt.rangeMin,   '{0:0.2d}', 'minute')); }
-            if (opt.seconds) { o.push(this._createRow(opt.rangeSec,   '{0:0.2d}', 'second')); }
-            if (opt.suffix)  { o.push(this._createRow(opt.suffix,     false,      'suffix')); }
-            return o;
-        },
-
-        _getRanges24: function() {
-            var o = [], opt = this.options;
-            o.push(this._createRow(opt.prefix, false, 'prefix')); // prefix is required in 24h mode
-            if (opt.hours)   { o.push(this._createRow($.range(0, 24),   '{0:0.2d}', 'hour')); }
-            if (opt.minutes) { o.push(this._createRow(opt.rangeMin, '{0:0.2d}', 'minute')); }
-            if (opt.seconds) { o.push(this._createRow(opt.rangeSec, '{0:0.2d}', 'second')); }
-            return o;
-        },
-
-        _buildMenu: function() {
-            var menu   = $('<span class="ui-reset ui-dropslide ui-component" />');
-            var ranges = this.options.convention === 24 
-                         && this._getRanges24() || this._getRanges12();
-
-            $.each(ranges, function(idx, val){
-                menu.append(val);
-            });
-            return menu;
         }
     });
 
-    $.ui.timepickr.defaults = {
-        convention:  24, // 24, 12
-        dropslide:   { trigger: 'focus' },
-        format12:    '{h:02.d}:{m:02.d} {suffix:s}',
-        format24:    '{h:02.d}:{m:02.d}',
-        handle:      false,
-        hours:       true,
-        minutes:     true,
-        seconds:     false,
-        prefix:      ['am', 'pm'],
-        suffix:      ['am', 'pm'],
-        rangeMin:    ['00', '15', '30', '45'],
-        rangeSec:    ['00', '15', '30', '45'],
-        updateLive:  true,
-        resetOnBlur: true,
-        val:         false
-    };
+    // These properties are shared accross every instances of datagrid
+    $.extend($.ui.datagrid, {
+        plugins: {},
+        defaults: {
+            width:    500,
+            method:   'get',
+            dataType: 'json',
+            onError: function(xr, ts, et) {
+                try { $.log(xr, ts, et); } catch (e) {};
+            }
+        },
+        events: {
+            refreshed: function(){},
+            refresh: function(e){
+                widget = $(this).data('datagrid');
+                widget._fixCellWidth();
+                widget._loadData();
+            }
+        },
 
+        /* parsers are used to extend data types (json/xml/..)
+         * the parser are basically callback function for jQuery.ajax's onSuccess
+         * http://docs.jquery.com/Ajax/jQuery.ajax#options
+         * */
+        parsers: {
+            json: function(data) {
+                for (r in data.rows) {
+                    try { this._createRow(data.rows[r].id, data.rows[r].cell); } catch(e) {};
+                }
+            }
+        },
+
+        /* cellModifiers are used extend cell options
+         *
+         * Modifiers must be functions scoped with the datagrid widget.
+         * So "this" refers to the current instance of datagrid (usually refered as "widget")
+         *
+         * Modifiers will recieve the following arguments:
+         *
+         *  @el    object[jQuery]   Actual cell element enclosed in a jQuery instance
+         *  @cell  object           Cell options (specified with widget.options.cols)
+         *  @type  string           Node type of the cell ("td" or "th") 
+         *
+         * */
+        cellModifiers: {
+            label: function(el, cell, type){ el.find('div').text(cell.label); },
+            align: function(el, cell, type){ el.find('div').andSelf().css('text-align', cell.align); },
+            width: function(el, cell, type){ if (type == 'th') { el.css('width', cell.width); } },
+            hide:  function(el, cell, type){ if (cell.hide) { el.hide(); } }
+        }
+    });
 })(jQuery);
