@@ -1,0 +1,53 @@
+title: jquery.datagrid
+version: 0.0.1
+svnrev: true
+dest: standalone/ui-datagrid/dist/
+modules:
+  - file: standalone/ui-datagrid/src/ui.datagrid.js
+    name: "datagrid"
+    destfile: ui.datagrid.all.js
+    depends:
+      - src: src/jquery.utils.js
+      - src: src/jquery.strings.js
+      - src: standalone/ui-datagrid/src/ui.datagrid.colhider.js
+      - src: standalone/ui-datagrid/src/ui.datagrid.ledger.js
+      - src: standalone/ui-datagrid/src/ui.datagrid.resizable.js
+      - src: standalone/ui-datagrid/src/ui.datagrid.selectable.js
+      - src: standalone/ui-datagrid/src/ui.datagrid.sortable.js
+  - file: standalone/ui-datagrid/src/ui.datagrid.js
+    name: "datagrid"
+    destfile: ui.datagrid.js
+    depends:
+      - src: src/jquery.utils.js
+      - src: src/jquery.strings.js
+
+copy: 
+  - src: demo/themes/default/images/*.png
+    dest: standalone/ui-datagrid/dist/themes/default/images/
+  - src: demo/themes/default/*.css
+    dest: standalone/ui-datagrid/dist/themes/default/
+  - src: standalone/ui-datagrid/src/img/*
+    dest: standalone/ui-datagrid/dist/themes/default/images/
+  - src: src/jquery.ui.all.js
+    dest: standalone/ui-datagrid/page/jquery.ui.all.js
+  - src: src/jquery.utils.js
+    dest: standalone/ui-datagrid/page/jquery.utils.js
+  - src: src/jquery.anchorHandler.js
+    dest: standalone/ui-datagrid/page/jquery.anchorHandler.js
+  - src: src/jquery.strings.js
+    dest: standalone/ui-datagrid/page/jquery.strings.js
+
+merge:
+  - dest: standalone/ui-datagrid/dist/themes/default/ui.datagrid.css
+    files:
+      - src: standalone/ui-datagrid/src/css/ui.datagrid.css
+zip:
+  - dest: standalone/ui-datagrid/downloads/ui.datagrid-%v-standalone.zip
+    src: standalone/ui-datagrid/
+    exclude: [".svn", "downloads", "build.yml", "demo"]
+
+gzip:
+  - dest: standalone/ui-datagrid/downloads/ui.datagrid-%v-standalone.tar.gz
+    src: standalone/ui-datagrid/
+    exclude: [".svn", "downloads", "build.yml", "demo"]
+
