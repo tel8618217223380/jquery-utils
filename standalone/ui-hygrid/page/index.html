@@ -11,6 +11,7 @@
         <script type="text/javascript" src="jquery.anchorHandler.js"></script>
         <script type="text/javascript" src="jquery.strings.js"></script>
         <script type="text/javascript" src="../src/ui.hygrid.js"></script>
+        <script type="text/javascript" src="../src/ui.hygrid.ledger.js"></script>
         <script type="text/javascript" src="../src/ui.hygrid.colhider.js"></script>
         <script type="text/javascript" src="../src/ui.hygrid.sortable.js"></script>
         <script type="text/javascript" src="../src/ui.hygrid.selectable.js"></script>
@@ -85,8 +86,8 @@ $('#demo').bind('refresh', function(e, widget){
                 <p style="margin-top:20px;"><img src="themeroller_ready_black_200px.gif" alt="jQuery UI ThemeRoller *Ready*" border="0" /></p>
                 <h5>Transitional</h5>
                 <p>
-                    This grid wasn't created to be an official jQuery UI plugin nor to replace the jQuery UI grid currently under developement.
-                    These are to different plugin with different goals. The author(s) of official plugin want to do things <em>right</em>, which means
+                    This grid wasn't created to be an official jQuery UI plugin nor to replace the <a href="http://jqueryui.pbwiki.com/GridTable">jQuery UI GridTable plugin</a> currently under developement.
+                    These are to different plugin with different goals. The author(s) of the GridTable plugin wants to do things <em>right</em>, which means
                     their grid isn't a priority, so it won't be available anytime soon in the official release.
                 </p>
                 <p>
@@ -116,7 +117,7 @@ $('#demo').bind('refresh', function(e, widget){
                 </p>
                 <h5>Backends</h5>
                 <p>
-                    Incorporation of generic backends is planned in the developpment roadmap. Every other grid systems lets up you to job of creating your own backend. I've already coded a somewhat generic flexigrid backend for Django and I plan to port it to this grid. If I can make it flexible enough to support more than one grid system I will. I will most likely have to make a PHP backend soon for the demos and tests.
+                    Incorporation of generic backends is planned in the developpment roadmap. Every other grid systems lets up you to job of creating your own backend. I've already coded a somewhat generic flexigrid backend for Django and I plan to port it to this grid. If I can make it flexible enough to support more than one grid system, I will try to do so. I will also most likely have to make a PHP backend soon for the demos and tests.
                 </p>
                 <h4>Is it for me ?</h4>
                 <p>
@@ -213,7 +214,7 @@ $('#demo').bind('refresh', function(e, widget){
                 <h3>Google Code</h3>
                 <ul id="downloads-list">
                     <li><a class="glass" href="http://code.google.com/p/jquery-utils/downloads/list"><img src="package.png" alt="Package" align="absmiddle">Download packages</a></li>
-                    <li><a class="glass" href="http://code.google.com/p/jquery-utils/source/browse/#svn/trunk/standalone/ui-timepickr/dist"><img src="script_code.png" alt="Package" align="absmiddle">Browse source code</a></li>
+                    <li><a class="glass" href="http://code.google.com/p/jquery-utils/source/browse/#svn/trunk/standalone/ui-hygrid/dist"><img src="script_code.png" alt="Package" align="absmiddle">Browse source code</a></li>
                 </ul>
                 <h3>Subversion</h3>
                 <pre>svn co http://jquery-utils.googlecode.com/svn/trunk/standalone/ui-hygrid/ ui-hygrid</pre>
@@ -226,7 +227,7 @@ $('#demo').bind('refresh', function(e, widget){
                     Please use <a href="http://code.google.com/p/jquery-utils/issues/list">the project's bug tracker</a> to report bugs, also check if the bug is not already reported.
                 </p>
                 <p>
-                To report a bug, click on <a href="http://code.google.com/p/jquery-utils/issues/list">New issue</a> and fill up the form. Don't forget to specify your OS and Browser (vendor and version). Finally, add <em>ui-timepickr</em> in labels.
+                To report a bug, click on <a href="http://code.google.com/p/jquery-utils/issues/list">New issue</a> and fill up the form. Don't forget to specify your OS and Browser (vendor and version). Finally, add <em>ui-hygrid</em> in labels.
                 </p>
             </div>
             <div id="s-documentation" class="subsection">
@@ -265,7 +266,7 @@ $('#demo').bind('refresh', function(e, widget){
                     glad to merge them into trunk if the code looks decent and doesn't break the unit tests.
                 </p>
                 <p>
-                   <a href="mailto:haineault@gmail.com?subject=jquery.ui.timepickr" title="Contact me">Contact me</a>
+                   <a href="mailto:haineault@gmail.com?subject=jquery.ui.hygrid" title="Contact me">Contact me</a>
                 </p>
                 <h3>Development roadmap</h3>
                 <table cellpadding="0" cellspacing="0" summary="Development milestones" class="milestones">
@@ -287,9 +288,9 @@ $('#demo').bind('refresh', function(e, widget){
                             <th>0.0.2</th>
                             <td>
                                 <ul>
+                                    <li>Toolbar</li>
+                                    <li>Pager</li>
                                     <li>Full sortable support</li>
-                                    <li>Unit tests</li>
-                                    <li>Create from existing table</li>
                                 </ul>
                             </td>
                         </tr>
@@ -297,9 +298,21 @@ $('#demo').bind('refresh', function(e, widget){
                             <th>0.0.3</th>
                             <td>
                                 <ul>
+                                    <li>Unit tests</li>
+                                    <li>Search</li>
+                                    <li>Create from existing table</li>
+                                    <li>At least one backend (PHP or Python)</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="minor">
+                            <th>0.0.4</th>
+                            <td>
+                                <ul>
                                     <li>Pager</li>
                                     <li>Search</li>
                                     <li>Toolbar</li>
+                                    <li>At least one backend (PHP or Python)</li>
                                 </ul>
                             </td>
                         </tr>
@@ -307,7 +320,26 @@ $('#demo').bind('refresh', function(e, widget){
                             <th>0.0.5</th>
                             <td>
                                 <ul>
-                                    <li>Resizable</li>
+                                    <li>Resizable table &amp; cols</li>
+                                    <li>All plugins unit tested</li>
+                                    <li>API freeze</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="minor">
+                            <th>0.0.6</th>
+                            <td>
+                                <ul>
+                                    <li>Resizable table &amp; cols</li>
+                                    <li>All plugins unit tested</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="minor">
+                            <th>0.0.7</th>
+                            <td>
+                                <ul>
+                                    <li>Features freeze, maintenance releases until 1.0</li>
                                 </ul>
                             </td>
                         </tr>
@@ -320,21 +352,10 @@ $('#demo').bind('refresh', function(e, widget){
                             </td>
                         </tr>
                         <tr class="minor">
-                            <th>0.1.1</th>
+                            <th>1.1.1</th>
                             <td>
                                 <ul>
-                                    <li class="done">Input reset itself on blur when no click happens  (see resetOnBlur option)</li>
-                                    <li class="done">Applied themeroller standards <a href="http://www.filamentgroup.com/lab/developer_your_own_jquery_themeroller_ready_components/">described here</a>.</li>
-                                </ul>
-                            </td>
-                        </tr>
-                        <tr class="major">
-                            <th>0.2.0</th>
-                            <td>
-                                <ul>
-                                    <li>Polish base theme (follow UI styles)</li>
-                                    <li>Support for custom labels</li>
-                                    <li>Opera Support</li>
+                                    <li>Inline row editing</li>
                                 </ul>
                             </td>
                         </tr>

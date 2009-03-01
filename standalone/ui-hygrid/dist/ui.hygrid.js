@@ -517,7 +517,7 @@
     $.extend(strings);
 })(jQuery);
 /*
-  jQuery ui.datagrid.colhider
+  jQuery ui.hygrid.colhider
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -527,8 +527,11 @@
 
 */
 
-(function($) {if ($.ui.datagrid){
-    $.ui.datagrid.plugins.colhider = {
+(function($) {if ($.ui.hygrid){
+    $.tpl('', '<ul class="ui-hygrid-p-colhider-list ui-helper-hidden ui-helper-reset" />');
+    $.tpl('', '<li class="ui-corner-all ui-helper-reset"><label><input id="col-{id:d}" type="checkbox" {c:s} /> {l:s}</label></li>');
+
+    $.ui.hygrid.plugins.colhider = {
         _init: function() {
             this.options = $.extend({colhider: true}, this.options);
         },
@@ -536,11 +539,12 @@
             var widget = this;
             if (widget.options.colhider) {
             widget._fixCellIndex = widget._fixCellIndex + 1;
-                widget.ui.colhiderlist = $('<ul class="ui-datagrid-p-colhider-list ui-helper-hidden" />').prependTo(widget.ui.wrapper);
+                widget.ui.colhiderlist = $('<ul class="ui-hygrid-p-colhider-list ui-helper-hidden ui-helper-reset" />').prependTo(widget.ui.wrapper);
                 for (x in widget.options.cols) {
                     var checked = (typeof(widget.options.cols[x].hide) == 'undefined')? 'checked="checked"': '';
 
-                    $($.format('<li class="ui-corner-all"><label><input id="col-{id:d}" type="checkbox" {c:s} /> {l:s}</label></li>', {id: x, l: widget.options.cols[x].label, c: checked}))
+                    $($.format('<li class="ui-corner-all ui-helper-reset"><label><input id="col-{id:d}" type="checkbox" {c:s} /> {l:s}</label></li>', 
+                               {id: x, l: widget.options.cols[x].label, c: checked}))
                         .hover(function(){ $(this).addClass('ui-state-hover');}, 
                                function(){ $(this).removeClass('ui-state-hover'); })
                         .bind('change.colhider', function(){
@@ -560,7 +564,7 @@
                         .appendTo(widget.ui.colhiderlist);
                 }
 
-                $('<th class="ui-datagrid-p-colhider ui-state-default"><span class="ui-icon ui-icon-gridmenu" /></th>').width(16)
+                $('<th class="ui-hygrid-p-colhider ui-state-default"><span class="ui-icon ui-icon-gridmenu" /></th>').width(16)
                     .bind('click.colhider', function() {
                         widget.ui.colhiderlist.css({
                             top: widget.ui.body.position().top,
@@ -580,7 +584,7 @@
     };
 }})(jQuery);
 /*
-  jQuery ui.datagrid.ledger - 0.0.1
+  jQuery ui.hygrid.ledger - 0.0.1
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -590,8 +594,8 @@
 
 */
 
-(function($) {if ($.ui.datagrid) {
-    $.ui.datagrid.plugins.ledger = {
+(function($) {if ($.ui.hygrid) {
+    $.ui.hygrid.plugins.ledger = {
         _init: function() {
             this.options = $.extend({ledger: true}, this.options);
         },
@@ -606,7 +610,7 @@
     };
 }})(jQuery);
 /*
-  jQuery ui.datagrid.resizable - 0.0.1
+  jQuery ui.hygrid.resizable - 0.0.1
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -616,8 +620,8 @@
 
 */
 
-(function($) {if ($.ui.datagrid) {
-    $.ui.datagrid.plugins.resizable = {
+(function($) {if ($.ui.hygrid) {
+    $.ui.hygrid.plugins.resizable = {
         _init: function() {
             this.options = $.extend({resizable: true}, this.options);
         },
@@ -636,7 +640,7 @@
     };
 }})(jQuery);
 /*
-  jQuery ui.datagrid.selectable - 0.0.1
+  jQuery ui.hygrid.selectable - 0.0.1
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -646,8 +650,8 @@
 
 */
 
-(function($) {if ($.ui.datagrid){
-    $.ui.datagrid.plugins.selectable = {
+(function($) {if ($.ui.hygrid){
+    $.ui.hygrid.plugins.selectable = {
         _init: function() {
             this.options = $.extend({selectable: true}, this.options);
         },
@@ -672,7 +676,7 @@
     };
 }})(jQuery);
 /*
-  jQuery ui.datagrid.sortable - 0.0.1
+  jQuery ui.hygrid.sortable - 0.0.1
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -682,13 +686,13 @@
 
 */
 
-(function($) {if ($.ui.datagrid) {
-    $.ui.datagrid.plugins.sortable = {
+(function($) {if ($.ui.hygrid) {
+    $.ui.hygrid.plugins.sortable = {
         _init: function() {
             widget = this;
             widget.options = $.extend({sortable: true}, widget.options);
             widget.params  = $.extend({sortname: '', sortorder: 'asc'});
-            $.ui.datagrid.cellModifiers.sortable = function(el, cell, type){ 
+            $.ui.hygrid.cellModifiers.sortable = function(el, cell, type){ 
                 if (type == 'th' && cell.sortable) { 
                     el.addClass('ui-sortable')
                         .hover(function(){ $(this).addClass('ui-state-hover');}, 
@@ -707,7 +711,7 @@
     };
 }})(jQuery);
 /*
-  jQuery ui.datagrid - 0.0.1
+  jQuery ui.hygrid - 0.0.1
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -726,12 +730,12 @@
 (function($) {
     var debug = true;
     
-    $.tpl('datagrid.table',   '<table class="ui-widget" cellpadding="0" cellspacing="0" summary=""><thead /><tbody /><tfoot /></table>');
-    $.tpl('datagrid.toolbar', '<div class="ui-datagrid-toolbar" />');
-    $.tpl('datagrid.pager',   '<div class="ui-datagrid-pager" />');
-    $.tpl('datagrid.search',  '<div class="ui-datagrid-search" />');
+    $.tpl('hygrid.table',   '<table class="ui-widget" cellpadding="0" cellspacing="0" summary=""><thead /><tbody /><tfoot /></table>');
+    $.tpl('hygrid.toolbar', '<div class="ui-hygrid-toolbar" />');
+    $.tpl('hygrid.pager',   '<div class="ui-hygrid-pager" />');
+    $.tpl('hygrid.search',  '<div class="ui-hygrid-search" />');
 
-    $.widget('ui.datagrid', {
+    $.widget('ui.hygrid', {
         params: {},
         bind: function(eName, callback) {      
             return this.ui.wrapper.bind(eName, callback);
@@ -741,7 +745,7 @@
             var widget = this;
             this.ui = {};
             $(this.element).each(function(){
-                widget._createDatagrid(this);
+                widget._createhygrid(this);
             });
         },
         _fixCellIndex: 1,
@@ -750,32 +754,32 @@
             $ths.eq($ths.length - this._fixCellIndex).css('width', 'auto');
         },
 
-        _createDatagrid: function(el){
-            this.ui.wrapper = $(el).addClass('ui-datagrid')
+        _createhygrid: function(el){
+            this.ui.wrapper = $(el).addClass('ui-hygrid')
                                 .width(this.options.width)
-                                .data('datagrid', this)
-                                .bind('refresh.datagrid', $.ui.datagrid.events.refresh);
+                                .data('hygrid', this)
+                                .bind('refresh.hygrid', $.ui.hygrid.events.refresh);
 
-            this.ui.table = $.tpl('datagrid.table')
+            this.ui.table = $.tpl('hygrid.table')
                               .width(this.options.width)
                               .appendTo(this.ui.wrapper);
 
             this._pluginsCall('_init');
-            this._createDatagridHeader();
-            this._createDatagridBody();
+            this._createhygridHeader();
+            this._createhygridBody();
             this._pluginsCall('_ready');
             this.ui.wrapper.trigger('refresh');
         },
 
         _pluginsCall: function(method, args){
-            for (x in $.ui.datagrid.plugins) {
+            for (x in $.ui.hygrid.plugins) {
                 try {
-                    $.ui.datagrid.plugins[x][method].apply(this, args || []);
+                    $.ui.hygrid.plugins[x][method].apply(this, args || []);
                 } catch(e) {};
             }
         },
 
-        _createDatagridHeader: function(){
+        _createhygridHeader: function(){
             var widget = this;
             var tr = $('<tr />');
             this.ui.header = this.ui.table.find('thead');
@@ -785,7 +789,7 @@
             this.ui.header.append(tr);
         },
 
-        _createDatagridBody: function() {
+        _createhygridBody: function() {
             this.ui.body  = this.ui.table.find('tbody');
         },
 
@@ -800,11 +804,11 @@
         },
 
         _createCell: function(cell, type, modifiers) {
-            var mod = modifiers || $.keys($.ui.datagrid.cellModifiers);
+            var mod = modifiers || $.keys($.ui.hygrid.cellModifiers);
             var el  = $($.format('<{0:s}><div /></{0:s}>', type || 'td'));
             for (x in mod) {
                 try {
-                    $.ui.datagrid.cellModifiers[mod[x]]
+                    $.ui.hygrid.cellModifiers[mod[x]]
                         .apply(this, [el, cell, type && type.toLowerCase() || 'td']);
                 } catch(e) {}
             }
@@ -839,7 +843,7 @@
                 data:       '', // params,
                 dataType:   widget.options.dataType,
                 success:    function(){ 
-                    $.ui.datagrid.parsers[widget.options.dataType].apply(widget, arguments); 
+                    $.ui.hygrid.parsers[widget.options.dataType].apply(widget, arguments); 
                     widget.ui.wrapper.trigger('refreshed')
                 },
                 error: widget.options.onError
@@ -847,8 +851,8 @@
         }
     });
 
-    // These properties are shared accross every instances of datagrid
-    $.extend($.ui.datagrid, {
+    // These properties are shared accross every instances of hygrid
+    $.extend($.ui.hygrid, {
         plugins: {},
         defaults: {
             width:    500,
@@ -861,7 +865,7 @@
         events: {
             refreshed: function(){},
             refresh: function(e){
-                widget = $(this).data('datagrid');
+                widget = $(this).data('hygrid');
                 widget._fixCellWidth();
                 widget._loadData();
             }
@@ -882,8 +886,8 @@
 
         /* cellModifiers are used extend cell options
          *
-         * Modifiers must be functions scoped with the datagrid widget.
-         * So "this" refers to the current instance of datagrid (usually refered as "widget")
+         * Modifiers must be functions scoped with the hygrid widget.
+         * So "this" refers to the current instance of hygrid (usually refered as "widget")
          *
          * Modifiers will recieve the following arguments:
          *
@@ -1419,7 +1423,7 @@
     $.extend(strings);
 })(jQuery);
 /*
-  jQuery ui.datagrid - 0.0.1
+  jQuery ui.hygrid - 0.0.1
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -1438,12 +1442,12 @@
 (function($) {
     var debug = true;
     
-    $.tpl('datagrid.table',   '<table class="ui-widget" cellpadding="0" cellspacing="0" summary=""><thead /><tbody /><tfoot /></table>');
-    $.tpl('datagrid.toolbar', '<div class="ui-datagrid-toolbar" />');
-    $.tpl('datagrid.pager',   '<div class="ui-datagrid-pager" />');
-    $.tpl('datagrid.search',  '<div class="ui-datagrid-search" />');
+    $.tpl('hygrid.table',   '<table class="ui-widget" cellpadding="0" cellspacing="0" summary=""><thead /><tbody /><tfoot /></table>');
+    $.tpl('hygrid.toolbar', '<div class="ui-hygrid-toolbar" />');
+    $.tpl('hygrid.pager',   '<div class="ui-hygrid-pager" />');
+    $.tpl('hygrid.search',  '<div class="ui-hygrid-search" />');
 
-    $.widget('ui.datagrid', {
+    $.widget('ui.hygrid', {
         params: {},
         bind: function(eName, callback) {      
             return this.ui.wrapper.bind(eName, callback);
@@ -1453,7 +1457,7 @@
             var widget = this;
             this.ui = {};
             $(this.element).each(function(){
-                widget._createDatagrid(this);
+                widget._createhygrid(this);
             });
         },
         _fixCellIndex: 1,
@@ -1462,32 +1466,32 @@
             $ths.eq($ths.length - this._fixCellIndex).css('width', 'auto');
         },
 
-        _createDatagrid: function(el){
-            this.ui.wrapper = $(el).addClass('ui-datagrid')
+        _createhygrid: function(el){
+            this.ui.wrapper = $(el).addClass('ui-hygrid')
                                 .width(this.options.width)
-                                .data('datagrid', this)
-                                .bind('refresh.datagrid', $.ui.datagrid.events.refresh);
+                                .data('hygrid', this)
+                                .bind('refresh.hygrid', $.ui.hygrid.events.refresh);
 
-            this.ui.table = $.tpl('datagrid.table')
+            this.ui.table = $.tpl('hygrid.table')
                               .width(this.options.width)
                               .appendTo(this.ui.wrapper);
 
             this._pluginsCall('_init');
-            this._createDatagridHeader();
-            this._createDatagridBody();
+            this._createhygridHeader();
+            this._createhygridBody();
             this._pluginsCall('_ready');
             this.ui.wrapper.trigger('refresh');
         },
 
         _pluginsCall: function(method, args){
-            for (x in $.ui.datagrid.plugins) {
+            for (x in $.ui.hygrid.plugins) {
                 try {
-                    $.ui.datagrid.plugins[x][method].apply(this, args || []);
+                    $.ui.hygrid.plugins[x][method].apply(this, args || []);
                 } catch(e) {};
             }
         },
 
-        _createDatagridHeader: function(){
+        _createhygridHeader: function(){
             var widget = this;
             var tr = $('<tr />');
             this.ui.header = this.ui.table.find('thead');
@@ -1497,7 +1501,7 @@
             this.ui.header.append(tr);
         },
 
-        _createDatagridBody: function() {
+        _createhygridBody: function() {
             this.ui.body  = this.ui.table.find('tbody');
         },
 
@@ -1512,11 +1516,11 @@
         },
 
         _createCell: function(cell, type, modifiers) {
-            var mod = modifiers || $.keys($.ui.datagrid.cellModifiers);
+            var mod = modifiers || $.keys($.ui.hygrid.cellModifiers);
             var el  = $($.format('<{0:s}><div /></{0:s}>', type || 'td'));
             for (x in mod) {
                 try {
-                    $.ui.datagrid.cellModifiers[mod[x]]
+                    $.ui.hygrid.cellModifiers[mod[x]]
                         .apply(this, [el, cell, type && type.toLowerCase() || 'td']);
                 } catch(e) {}
             }
@@ -1551,7 +1555,7 @@
                 data:       '', // params,
                 dataType:   widget.options.dataType,
                 success:    function(){ 
-                    $.ui.datagrid.parsers[widget.options.dataType].apply(widget, arguments); 
+                    $.ui.hygrid.parsers[widget.options.dataType].apply(widget, arguments); 
                     widget.ui.wrapper.trigger('refreshed')
                 },
                 error: widget.options.onError
@@ -1559,8 +1563,8 @@
         }
     });
 
-    // These properties are shared accross every instances of datagrid
-    $.extend($.ui.datagrid, {
+    // These properties are shared accross every instances of hygrid
+    $.extend($.ui.hygrid, {
         plugins: {},
         defaults: {
             width:    500,
@@ -1573,7 +1577,7 @@
         events: {
             refreshed: function(){},
             refresh: function(e){
-                widget = $(this).data('datagrid');
+                widget = $(this).data('hygrid');
                 widget._fixCellWidth();
                 widget._loadData();
             }
@@ -1594,8 +1598,8 @@
 
         /* cellModifiers are used extend cell options
          *
-         * Modifiers must be functions scoped with the datagrid widget.
-         * So "this" refers to the current instance of datagrid (usually refered as "widget")
+         * Modifiers must be functions scoped with the hygrid widget.
+         * So "this" refers to the current instance of hygrid (usually refered as "widget")
          *
          * Modifiers will recieve the following arguments:
          *

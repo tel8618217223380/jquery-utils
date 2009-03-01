@@ -1,12 +1,12 @@
-.ui-datagrid {
+.ui-hygrid {
     background:#ddd;
     border:1px solid #ccc;
 }
-.ui-datagrid table {
+.ui-hygrid table {
     margin:0;padding:0;
     background:#ddd;
 }
-.ui-datagrid table thead th {
+.ui-hygrid table thead th {
     font-size:70%;
     font-weight:normal;
     background-color:ThreeDFace;
@@ -18,25 +18,25 @@
     overflow-x:hidden;
     white-space:nowrap;
 }
-.ui-datagrid table thead th:last-child {
+.ui-hygrid table thead th:last-child {
     border-right:0;
 }
 
-.ui-datagrid table thead th.ui-sortable {
+.ui-hygrid table thead th.ui-sortable {
     cursor:pointer;
 }
-.ui-datagrid table thead th.ui-sortable div {
+.ui-hygrid table thead th.ui-sortable div {
     margin-right:16px; /* We don't want cols label to overlap the sort button */
 }
-.ui-datagrid table thead th .ui-icon {
+.ui-hygrid table thead th .ui-icon {
     float:right;
     height:15px;
     width:15px;
 }
 /*.ui-icon .ui-icon-triangle-2-n-s {}*/
-.ui-datagrid table tbody {}
-.ui-datagrid table tbody tr {}
-.ui-datagrid table tbody tr td {
+.ui-hygrid table tbody {}
+.ui-hygrid table tbody tr {}
+.ui-hygrid table tbody tr td {
     background-color:ThreeDHighlight;
     font-size:80%;
     font-weight:normal;
@@ -45,22 +45,22 @@
     border-right:1px solid InactiveBorder;
     padding:4px;
 }
-.ui-datagrid table tbody tr.odd td {
+.ui-hygrid table tbody tr.odd td {
     background-color:ThreeDLightShadow;
 }
-.ui-datagrid table tbody tr.ui-selected td {
+.ui-hygrid table tbody tr.ui-selected td {
     background-color:#def;
 }
-.ui-datagrid table tfoot {}
-.ui-datagrid-p-colhider {
+.ui-hygrid table tfoot {}
+.ui-hygrid-p-colhider {
 }
-.ui-datagrid-p-colhider  .ui-icon-gridmenu {
+.ui-hygrid-p-colhider  .ui-icon-gridmenu {
     width:10px;
     height:10px;
     display:block;
     background:transparent url(images/colhider.png) no-repeat 50% 50%;
 }
-.ui-datagrid-p-colhider-list {
+.ui-hygrid-p-colhider-list {
     margin:0;padding:0;
     position:absolute;
     font-size:70%;
@@ -73,19 +73,19 @@
     padding:4px;
     width:120px;
 }
-.ui-datagrid-p-colhider-list li {
+.ui-hygrid-p-colhider-list li {
     list-style:none;
     border:1px solid ThreeDFace;
 }
-.ui-datagrid-p-colhider-list li.ui-state-hover {
+.ui-hygrid-p-colhider-list li.ui-state-hover {
     border-color:ThreeDShadow;
 }
 
-.ui-datagrid-p-colhider-list li label {
+.ui-hygrid-p-colhider-list li label {
     display:block;
     height:20px;
     line-height:2.4em;
 }
-.ui-datagrid-p-colhider-list li label input {
+.ui-hygrid-p-colhider-list li label input {
     float:left;
 }

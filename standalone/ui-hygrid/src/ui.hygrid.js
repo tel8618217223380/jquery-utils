@@ -72,7 +72,7 @@
             var tr = $('<tr />');
             this.ui.header = this.ui.table.find('thead');
             for (x in this.options.cols) {
-                tr.append(widget._createCell(this.options.cols[x], 'th'));
+                widget._createCell(this.options.cols[x], 'th').appendTo(tr);
             }
             this.ui.header.append(tr);
         },

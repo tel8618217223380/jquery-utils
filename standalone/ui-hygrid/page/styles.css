@@ -37,7 +37,7 @@ body {
     -webkit-border-radius:3px;
 }
 a {
-    color:#3679AE;
+    color:#D1E833;
     text-decoration: none;
 }
 a:hover {
@@ -146,10 +146,9 @@ h3 {
     color:#3679AE;
 }
 #splash {
-    margin-top:27px;
+    height:300px;
+    margin-top:48px;
     padding-bottom:20px;
-    border-top:1px solid #333;
-    border-bottom:1px solid #444;
 }
 
 #splash #demo {
