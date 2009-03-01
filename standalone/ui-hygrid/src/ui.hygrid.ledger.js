@@ -1,5 +1,5 @@
 /*
-  jQuery ui.datagrid.ledger - @VERSION
+  jQuery ui.hygrid.ledger - @VERSION
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -9,8 +9,8 @@
 
 */
 
-(function($) {if ($.ui.datagrid) {
-    $.ui.datagrid.plugins.ledger = {
+(function($) {if ($.ui.hygrid) {
+    $.ui.hygrid.plugins.ledger = {
         _init: function() {
             this.options = $.extend({ledger: true}, this.options);
         },

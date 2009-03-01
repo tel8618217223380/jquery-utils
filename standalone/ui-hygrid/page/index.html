@@ -1,24 +1,24 @@
 <html>
     <head>
-        <title>ui.datagrid.js</title>
+        <title>ui.hygrid.js</title>
         <link rel="Stylesheet" media="screen" href="reset.css" />
         <link rel="Stylesheet" media="screen" href="styles.css" />
         <link rel="Stylesheet" media="screen" href="../dist/themes/default/ui.all.css" />
-        <link rel="Stylesheet" media="screen" href="../dist/themes/default/ui.datagrid.css" />
+        <link rel="Stylesheet" media="screen" href="../dist/themes/default/ui.hygrid.css" />
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
         <script type="text/javascript" src="jquery.ui.all.js"></script>
         <script type="text/javascript" src="jquery.utils.js"></script>
         <script type="text/javascript" src="jquery.anchorHandler.js"></script>
         <script type="text/javascript" src="jquery.strings.js"></script>
-        <script type="text/javascript" src="../src/ui.datagrid.js"></script>
-        <script type="text/javascript" src="../src/ui.datagrid.colhider.js"></script>
-        <script type="text/javascript" src="../src/ui.datagrid.sortable.js"></script>
-        <script type="text/javascript" src="../src/ui.datagrid.selectable.js"></script>
+        <script type="text/javascript" src="../src/ui.hygrid.js"></script>
+        <script type="text/javascript" src="../src/ui.hygrid.colhider.js"></script>
+        <script type="text/javascript" src="../src/ui.hygrid.sortable.js"></script>
+        <script type="text/javascript" src="../src/ui.hygrid.selectable.js"></script>
 
         <script type="text/javascript">
             $(function(){
-                $('#d-demo-wrapper-1').datagrid({
-                    url: 'datagrid-test.json',
+                $('#d-demo-wrapper-1').hygrid({
+                    url: 'simple-test.json',
                     width: 700,
                     selectable: 2,
                     cols: [
@@ -42,7 +42,7 @@
                 <li style="border-right:1px solid #333;"><a href="#s-about">About</a></li>
             </ul>
         </div>
-        <h2 id="title"><img src="logo.png" alt="ui.datagrid" border="0"></h2>
+        <h2 id="title"><img src="logo.png" alt="ui.hygrid" border="0"></h2>
         <div id="splash">
             <div id="demo">
                 <h2>Demo</h2>
@@ -53,7 +53,7 @@
             <div id="s-intro" class="subsection">
                 <h2><a name="intro">Introduction</a></h2>
                 <p>
-                <em>jquery.datagrid</em> is, you guessed it, yet another jQuery grid plugin. It was inspired by other great grids plugins like <a href="http://www.flexigrid.info/">flexigrid</a> and <a href="http://www.trirand.com/jqgrid/jqgrid.html">jqGrid</a>.
+                <em>jquery.hygrid</em> is, you guessed it, yet another jQuery grid plugin. It was inspired by other great grids plugins like <a href="http://www.flexigrid.info/">flexigrid</a> and <a href="http://www.trirand.com/jqgrid/jqgrid.html">jqGrid</a>.
                 </p>
                 <h4>What's the diffrence ?</h4>
                 <h5>jQuery UI widget</h5>
@@ -64,7 +64,7 @@
                 The widget also provide support for events, making it useless to provide callbacks in options. For example;
                 </p>
                 <code>// instead of
-$('#demo').datagrid({
+$('#demo').hygrid({
     refresh: function(){
         // do stuff ..
     }
@@ -128,7 +128,7 @@ $('#demo').bind('refresh', function(e, widget){
                     <thead>
                         <tr>
                             <th>Feature</th>
-                            <th>datagrid</th>
+                            <th>hygrid</th>
                             <th><a href="http://reconstrukt.com/ingrid/">ingrid</a></th>
                             <th><a href="http://flexigrid.info/">flexigrid</a></th>
                             <th><a href="http://www.trirand.com/blog/">jqGrid</a></th>
@@ -216,7 +216,7 @@ $('#demo').bind('refresh', function(e, widget){
                     <li><a class="glass" href="http://code.google.com/p/jquery-utils/source/browse/#svn/trunk/standalone/ui-timepickr/dist"><img src="script_code.png" alt="Package" align="absmiddle">Browse source code</a></li>
                 </ul>
                 <h3>Subversion</h3>
-                <pre>svn co http://jquery-utils.googlecode.com/svn/trunk/standalone/ui-datagrid/ ui-datagrid</pre>
+                <pre>svn co http://jquery-utils.googlecode.com/svn/trunk/standalone/ui-hygrid/ ui-hygrid</pre>
                 <h3>Known issues</h3>
                 <ul>
                     <li>Fail in IE</li>
@@ -233,8 +233,8 @@ $('#demo').bind('refresh', function(e, widget){
                 <h2><a name="documentation">Documentation</a></h2>
                 <h3>Basic usage</h3>
 <code>$(function(){
-    $('#grid').datagrid({
-        url: 'datagrid-test.json',
+    $('#grid').hygrid({
+        url: 'hygrid-test.json',
         cols: [
             {label: 'ISO',  name: 'iso',  width: 40, sortable: false, align: 'center'},
             {label: 'Name', name: 'name', width: 40, sortable: true, align: 'left', hide: true},
@@ -247,7 +247,7 @@ $('#demo').bind('refresh', function(e, widget){
                 <h3>Complete reference</h3>
                 <p>
                     Documentation and the complete list of options is available
-                    on the <a href="http://code.google.com/p/jquery-utils/wiki/UiDatagrid">project's wiki page</a> on Google code.
+                    on the <a href="http://code.google.com/p/jquery-utils/wiki/Uihygrid">project's wiki page</a> on Google code.
                 </p>
             </div>
             <div id="s-about" class="subsection">

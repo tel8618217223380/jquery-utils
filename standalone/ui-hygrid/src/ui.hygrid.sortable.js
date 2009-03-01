@@ -1,5 +1,5 @@
 /*
-  jQuery ui.datagrid.sortable - @VERSION
+  jQuery ui.hygrid.sortable - @VERSION
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -9,13 +9,13 @@
 
 */
 
-(function($) {if ($.ui.datagrid) {
-    $.ui.datagrid.plugins.sortable = {
+(function($) {if ($.ui.hygrid) {
+    $.ui.hygrid.plugins.sortable = {
         _init: function() {
             widget = this;
             widget.options = $.extend({sortable: true}, widget.options);
             widget.params  = $.extend({sortname: '', sortorder: 'asc'});
-            $.ui.datagrid.cellModifiers.sortable = function(el, cell, type){ 
+            $.ui.hygrid.cellModifiers.sortable = function(el, cell, type){ 
                 if (type == 'th' && cell.sortable) { 
                     el.addClass('ui-sortable')
                         .hover(function(){ $(this).addClass('ui-state-hover');}, 

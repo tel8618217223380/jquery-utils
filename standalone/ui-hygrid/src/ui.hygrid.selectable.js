@@ -1,5 +1,5 @@
 /*
-  jQuery ui.datagrid.selectable - @VERSION
+  jQuery ui.hygrid.selectable - @VERSION
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -9,8 +9,8 @@
 
 */
 
-(function($) {if ($.ui.datagrid){
-    $.ui.datagrid.plugins.selectable = {
+(function($) {if ($.ui.hygrid){
+    $.ui.hygrid.plugins.selectable = {
         _init: function() {
             this.options = $.extend({selectable: true}, this.options);
         },

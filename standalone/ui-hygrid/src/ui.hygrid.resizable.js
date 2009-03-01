@@ -1,5 +1,5 @@
 /*
-  jQuery ui.datagrid.resizable - @VERSION
+  jQuery ui.hygrid.resizable - @VERSION
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -9,8 +9,8 @@
 
 */
 
-(function($) {if ($.ui.datagrid) {
-    $.ui.datagrid.plugins.resizable = {
+(function($) {if ($.ui.hygrid) {
+    $.ui.hygrid.plugins.resizable = {
         _init: function() {
             this.options = $.extend({resizable: true}, this.options);
         },
