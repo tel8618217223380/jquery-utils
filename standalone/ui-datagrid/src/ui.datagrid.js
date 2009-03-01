@@ -171,6 +171,7 @@
             }
         },
 
+
         /* cellModifiers are used extend cell options
          *
          * Modifiers must be functions scoped with the datagrid widget.

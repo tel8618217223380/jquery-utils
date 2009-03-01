@@ -1,7 +1,6 @@
 .ui-datagrid {
     background:#ddd;
     border:1px solid #ccc;
-    margin:40px;
 }
 .ui-datagrid table {
     margin:0;padding:0;
@@ -59,7 +58,7 @@
     width:10px;
     height:10px;
     display:block;
-    background:transparent url(../img/datagrid/colhider.png) no-repeat 50% 50%;
+    background:transparent url(images/colhider.png) no-repeat 50% 50%;
 }
 .ui-datagrid-p-colhider-list {
     margin:0;padding:0;

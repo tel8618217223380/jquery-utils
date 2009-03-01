@@ -10,6 +10,9 @@
 */
 
 (function($) {if ($.ui.datagrid){
+    $.tpl('', '<ul class="ui-datagrid-p-colhider-list ui-helper-hidden ui-helper-reset" />');
+    $.tpl('', '<li class="ui-corner-all ui-helper-reset"><label><input id="col-{id:d}" type="checkbox" {c:s} /> {l:s}</label></li>');
+
     $.ui.datagrid.plugins.colhider = {
         _init: function() {
             this.options = $.extend({colhider: true}, this.options);
@@ -18,11 +21,12 @@
             var widget = this;
             if (widget.options.colhider) {
             widget._fixCellIndex = widget._fixCellIndex + 1;
-                widget.ui.colhiderlist = $('<ul class="ui-datagrid-p-colhider-list ui-helper-hidden" />').prependTo(widget.ui.wrapper);
+                widget.ui.colhiderlist = $('<ul class="ui-datagrid-p-colhider-list ui-helper-hidden ui-helper-reset" />').prependTo(widget.ui.wrapper);
                 for (x in widget.options.cols) {
                     var checked = (typeof(widget.options.cols[x].hide) == 'undefined')? 'checked="checked"': '';
 
-                    $($.format('<li class="ui-corner-all"><label><input id="col-{id:d}" type="checkbox" {c:s} /> {l:s}</label></li>', {id: x, l: widget.options.cols[x].label, c: checked}))
+                    $($.format('<li class="ui-corner-all ui-helper-reset"><label><input id="col-{id:d}" type="checkbox" {c:s} /> {l:s}</label></li>', 
+                               {id: x, l: widget.options.cols[x].label, c: checked}))
                         .hover(function(){ $(this).addClass('ui-state-hover');}, 
                                function(){ $(this).removeClass('ui-state-hover'); })
                         .bind('change.colhider', function(){

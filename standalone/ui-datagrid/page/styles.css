@@ -25,7 +25,7 @@ body {
     font-weight:bold;
     margin:0 20px 0 4px;
     padding:4px 6px;
-    background:#BACF26 url('btn-hover.png') repeat-x!important;
+    background:#269 url('btn-hover.png') repeat-x!important;
     color:#fff!important;
     height:13px;
     padding:4px 7px 4px 5px;
@@ -91,7 +91,6 @@ h3 {
 #bd {
     margin-left:80px;
     width:700px;
-    padding-top:20px;
 }
 #bd h2 {
     border-bottom:1px solid #333;
@@ -147,18 +146,17 @@ h3 {
     color:#3679AE;
 }
 #splash {
-    height:190px;
     margin-top:27px;
+    padding-bottom:20px;
     border-top:1px solid #333;
-    border-bottom:1px solid #666;
+    border-bottom:1px solid #444;
 }
 
 #splash #demo {
-   position:absolute;
    margin:20px 0 0 80px;
    color:#fff;
 }
-#splash #demo h2 {
+h2 {
     font-weight:normal;
     font-size:120%;
     letter-spacing:2px;
@@ -167,20 +165,18 @@ h3 {
     margin:0;
 }
 
-#splash #demo h4 {
-    font-size:.8em;
-    margin:0 0 8px 0;
+h4 {
+    font-size:1.1em;
+    margin:12px 0 8px 0;
     color:#666;
     font-weight:normal;
 }
-.demo-wrapper {
-    position:absolute;
-    width:500px;
+h5 {
+    margin:14px 0 4px 0;
+    font-size:.8em;
+    color:#ccc;
 }
-#splash #demo-nav {
-    position:absolute;
-    margin:55px 0 0 540px;
-    font-size:120%;
+.demo-wrapper {
 }
 #splash #demo-nav li {
     color:#444;
@@ -216,12 +212,13 @@ h3 {
 }
 
 table.milestones {}
+table.features thead th,
 table.milestones thead th {
     background:#222;
     color:#444;
     font-size:80%;
     font-weight:normal;
-    padding:4px;
+    padding:4px 12px;
     border-bottom:1px solid #666;
 }
 table.milestones tbody th {
@@ -257,6 +254,28 @@ tr.minor td {
     font-size:80%!important;
     background:#222!important;
     color:#999!important;
+}
+table.features { margin:20px 0; }
+table.features thead th { 
+    color:#666; 
+    border:1px solid #333;
+    padding:6px;
+}
+table.features tbody th {
+    background:#222;
+    border-bottom:1px solid #333;
+    border-left:1px solid #333;
+    border-right:1px solid #333;
+    vertical-align:middle;
+    font-weight:normal;
+    text-align:right;
+    padding:6px;
+    font-size:80%;
+}
+table.features tbody td {
+    text-align:center;
+    border-right:1px solid #333;
+    border-bottom:1px solid #222;
 }
 
 a.glass {
@@ -305,4 +324,15 @@ input.demo:focus {
 .dark li.ui-timepickr.hover span {
     background:#3679AE url('btn-hover.png') repeat-x!important;
     color:#fff!important;
+}
+code {
+    display:block;
+    background:#222;
+    border:1px solid #333;
+    white-space: pre;
+    font-family:monospace;
+    padding:10px;
+    margin:20px 0;
+    -moz-border-radius:3px;
+    -webkit-border-radius:3px;
 }
