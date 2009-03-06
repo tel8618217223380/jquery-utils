@@ -210,7 +210,9 @@ h5 {
     margin:0px 5px -2px 0;
 }
 
-table.milestones {}
+table.milestones {
+    width:700px;
+}
 table.features thead th,
 table.milestones thead th {
     background:#222;
@@ -275,6 +277,7 @@ table.features tbody td {
     text-align:center;
     border-right:1px solid #333;
     border-bottom:1px solid #222;
+    width:40px;
 }
 
 a.glass {

@@ -54,7 +54,7 @@
 .ui-hygrid table tfoot {}
 .ui-hygrid-p-colhider {
 }
-.ui-hygrid-p-colhider  .ui-icon-gridmenu {
+.ui-hygrid-p-colhider .ui-icon-gridmenu {
     width:10px;
     height:10px;
     display:block;
@@ -73,8 +73,10 @@
     padding:4px;
     width:120px;
 }
-.ui-hygrid-p-colhider-list li {
-    list-style:none;
+ul.ui-hygrid-p-colhider-list li {
+    margin:0!important;
+    list-style:none!important;
+    list-style-type:none!important;
     border:1px solid ThreeDFace;
 }
 .ui-hygrid-p-colhider-list li.ui-state-hover {
