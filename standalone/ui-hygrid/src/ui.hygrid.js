@@ -22,13 +22,21 @@
     $.tpl('hygrid.search',  '<div class="ui-hygrid-search" />');
 
     $.widget('ui.hygrid', {
+        dom: {},
         plugins:  {},
         _init: function() {
-            var widget = this;
-            this.dom = {};
-            $(this.element).each(function(){
-                widget._createhygrid(this);
-            });
+            var ui = this;
+            if (ui.element.get(0).nodeName == 'TABLE') {
+                ui.dom.table   = ui.element;
+                ui.dom.wrapper = ui.dom.table.wrap('<div />').parent();
+            }
+            else {
+                ui.dom.wrapper = ui.element;
+                ui.dom.table   = ui.dom.wrapper.find('table');
+            }
+            ui.dom.wrapper.addClass('ui-hygrid').data('hygrid', ui);
+            ui._trigger('initialize',  [$.Event('initialize'),  ui]);
+            ui._trigger('initialized', [$.Event('initialized'), ui]);
         },
         
         // Returns all element from a given column index
@@ -50,46 +58,8 @@
         cells: function(visibleOnly) {
             return visibleOnly && this.dom.tbody.find('td') || this.dom.tbody.find('td:visible');
         },
-
-        // shortcuts
-        bind: function(eName, callback) { return this.dom.wrapper.bind(eName, callback); },
-
+        
         /* -- Unit tested end -- */
-        _createhygrid: function(el){
-            var ui = this;
-            if ($(el).get(0).nodeName == 'TABLE') {
-                ui.dom.table   = $(el);
-                ui.dom.wrapper = ui.dom.table.wrap('<div />').parent();
-            }
-            else {
-                ui.dom.wrapper = $(el);
-                ui.dom.table   = ui.dom.wrapper.find('table');
-            }
-            ui.dom.thead = ui.dom.table.find('thead');
-            ui.dom.tbody = ui.dom.table.find('tbody');
-            ui.dom.tfoot = ui.dom.table.find('tfoot');
-
-            ui.dom.wrapper
-                .addClass('ui-hygrid')
-                .data('hygrid', ui)
-                .bind('resized.hygrid', function() {
-                    ui._setGridWidth(); })
-                .bind('initialized.hygrid', function() {
-                    ui._trigger('resized');
-                    ui._fixCellWidth(); });
-
-            ui.dom.table = (ui.dom.wrapper.find('table').length > 0) 
-                ? ui.dom.wrapper.find('table')
-                : $.tpl('hygrid.table');
-                     
-            ui.dom.table.addClass('ui-widget')
-                .attr({cellpadding:0, cellspacing:0})
-                .appendTo(ui.dom.wrapper);
-
-            ui._setGridWidth();
-            ui.dom.body  = ui.dom.table.find('tbody');
-            ui._trigger('initialized', [$.Event('initialized'), ui]);
-        },
 
         _setGridWidth: function(){
             switch (this.options.width || 'auto') {
@@ -106,12 +76,6 @@
                     this.dom.table.width(this.options.width);
                 break;
             };
-        },
-
-        _fixCellIndex: 1,
-        _fixCellWidth: function() {
-            var $ths = $('th:visible', this.dom.header);
-            $ths.eq($ths.length - this._fixCellIndex).css('width', 'auto');
         },
 
         _createRow: function(id, cells) {
@@ -160,7 +124,7 @@
         _trigger: function(type, e, ui) {
                 var ui = ui || this;
                 $.ui.plugin.call(this, type, [e, ui]);
-                this.dom.wrapper.trigger(type, [e, ui]);
+                //this.element.trigger(type, [e, ui]);
                 return $.widget.prototype._trigger.call(this, type, e, ui);
         }
 
@@ -188,7 +152,7 @@
         version:     '@VERSION',
         eventPrefix: 'grid',
         getter:      'col cells cell row',
-        defaults: { data: false, width: 'auto', body: true, header: true },
+        defaults: { data: false, width: 'auto', core: true, htmltable: true },
 
         /* cellModifiers are used extend cell options
          *
@@ -204,12 +168,7 @@
          * */
         cellModifiers: {
             label: function(el, cell){ el.find('div').text(cell.label); },
-            align: function(el, cell){ el.find('div').andSelf().css('text-align', cell.align); },
-            width: function(el, cell, type, col){ 
-                if (type == 'th' && (this.options.width == 'auto' || col < this.options.cols.length-1)) { 
-                    el.find('div').andSelf().width(cell.width);
-                }
-            }
+            align: function(el, cell){ el.find('div').andSelf().css('text-align', cell.align); }
         },
 
         parsers: {
@@ -222,9 +181,45 @@
 
 /* Core plugins */
 
-$.ui.plugin.add('hygrid', 'header', {
+$.ui.plugin.add('hygrid', 'core', {
+    initialize: function(e, ui) {
+    },
+    resized: function(e, ui) {
+        ui._setGridWidth();
+    },
+});
+
+$.ui.plugin.add('hygrid', 'width', {
+    initialize: function(e, ui) {
+        $.extend($.ui.hygrid.cellModifiers, {
+            width: function(el, cell, type, col){ 
+                if (type == 'th' && (this.options.width == 'auto' || col < this.options.cols.length-1)) { 
+                    el.find('div').andSelf().width(cell.width);
+                }
+            }
+        });
+    },
+    colhided: function(e, ui) {
+        var $ths = $('th:visible', ui.dom.header);
+        $ths.eq($ths.length - 1).css('width', 'auto');
+        ui._trigger('resized', e, ui);
+    }
+});
+
+
+$.ui.plugin.add('hygrid', 'htmltable', {
+    initialize: function(e, ui) {
+        ui.dom.table = (ui.dom.wrapper.find('table').length > 0) ? ui.dom.wrapper.find('table') : $.tpl('hygrid.table');
+        ui.dom.thead = ui.dom.table.find('thead');
+        ui.dom.tbody = ui.dom.table.find('tbody');
+        ui.dom.tfoot = ui.dom.table.find('tfoot');
+        ui.dom.table.addClass('ui-widget')
+            .attr({cellpadding:0, cellspacing:0})
+            .appendTo(ui.dom.wrapper);
+    },
     initialized: function(e, ui) {
         $th = ui.dom.thead.find('th')
+                .disableSelection()
                 .addClass('ui-state-default ui-hygrid-header')
                 .each(function(x){
                     if ($('div', this).length == 0) {
@@ -235,6 +230,7 @@ $.ui.plugin.add('hygrid', 'header', {
                         ui._applyCellModifiers(ui.dom.thead.find('.ui-hygrid-header').eq(x), ui.options.cols[x], x);
                     }
                 });
+        ui._trigger('resized');
     }
 });
 

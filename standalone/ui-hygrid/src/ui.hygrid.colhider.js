@@ -13,6 +13,9 @@ $.tpl('colhider.menu',     '<ul class="ui-hygrid-p-colhider-menu ui-helper-hidde
 $.tpl('colhider.menuItem', '<li class="ui-corner-all ui-helper-reset"><label><input type="checkbox" {c:s} /> {label:s}</label></li>');
 
 $.ui.plugin.add('hygrid', 'colhider', {
+    coltoggled: function(e, ui) {
+        ui._trigger('resized');
+    },
     initialized: function(e, ui) {
         ui.options = $.extend({colhider: true}, ui.options);
 
@@ -22,18 +25,9 @@ $.ui.plugin.add('hygrid', 'colhider', {
             }
         });
         
-        ui.bind('coltoggled', function(e){
-            var $th = ui.dom.thead.find('.ui-hygrid-header:visible');
-            ui.cells().attr('colspan', 1);
-            ui.col($th.length-1, true).attr('colspan', 2);
-            //console.log($th.length);
-
-            ui._fixCellWidth();
-            ui._trigger('resized');
-        });
-
         if (ui.options.colhider) {
             ui.dom.colhidermenu = $.tpl('colhider.menu').prependTo(ui.dom.wrapper);
+            ui.dom.tbody.find('tr').append('<td>&nbsp;</td>');
             ui._fixCellIndex   = ui._fixCellIndex + 1;
             $th = ui.dom.thead.find('th');
             // create menu

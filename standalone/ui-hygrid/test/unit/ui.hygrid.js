@@ -15,8 +15,8 @@
         expect(10);
         var testdiv = $('<div />').appendTo('#main');
         testdiv.html(testtable)
-            .bind('initialized.test', function(){
-                ok(true, 'initialized event is called upon init');
+            .bind('gridinitialized.test', function(){
+                ok(true, 'gridinitialized event is called upon init');
             })
             .hygrid({colhider:false});
 
