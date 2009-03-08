@@ -11,12 +11,13 @@
   ------------
   - jquery.utils.js
   - jquery.strings.js
-  - jquery.dom.js
+  - jquery.ui.js
 
 */
 
 (function($) {
     $.tpl('hygrid.table',   '<table class="ui-widget" cellpadding="0" cellspacing="0" summary=""><thead /><tbody /><tfoot /></table>');
+    $.tpl('hygrid.caption', '<caption class="ui-hygrid-caption ui-widget-header">{caption:s}</caption>');
     $.tpl('hygrid.toolbar', '<div class="ui-hygrid-toolbar" />');
     $.tpl('hygrid.pager',   '<div class="ui-hygrid-pager" />');
     $.tpl('hygrid.search',  '<div class="ui-hygrid-search" />');
@@ -25,18 +26,8 @@
         dom: {},
         plugins:  {},
         _init: function() {
-            var ui = this;
-            if (ui.element.get(0).nodeName == 'TABLE') {
-                ui.dom.table   = ui.element;
-                ui.dom.wrapper = ui.dom.table.wrap('<div />').parent();
-            }
-            else {
-                ui.dom.wrapper = ui.element;
-                ui.dom.table   = ui.dom.wrapper.find('table');
-            }
-            ui.dom.wrapper.addClass('ui-hygrid').data('hygrid', ui);
-            ui._trigger('initialize',  [$.Event('initialize'),  ui]);
-            ui._trigger('initialized', [$.Event('initialized'), ui]);
+            this._trigger('initialize',  [$.Event('initialize'),  this]);
+            this._trigger('initialized', [$.Event('initialized'), this]);
         },
         
         // Returns all element from a given column index
@@ -46,8 +37,9 @@
                                         .add(this.dom.tbody.find('td:nth-child('+ (index+1) +')'));
         },
 
-        row: function(i) {
-            return this.dom.tbody.find('tr').eq(i);
+        row: function(i, a) {
+            return $.isArray(i) && this._createRow(i) 
+                                || this.dom.tbody.find('tr').eq(i);
         },
 
         cell: function(x, y, visible) {
@@ -78,14 +70,19 @@
             };
         },
 
-        _createRow: function(id, cells) {
-            var tr = $('<tr />');
+        _createRow: function(cells) {
+            var e  = $.Event();
+            this.insertedRow = $('<tr />');
             for (i in cells) {
-                var cell = this.options.cols[i]; var label = cell.label; cell.label = cells[i];
-                tr.append(this._createCell(cell, 'td'));
+                var cell = this.options.cols && this.options.cols[i] || {}; 
+                var label = cell.label; 
+                cell.label = cells[i];
+                this.insertedRow.append(this._createCell(cell, 'td'));
                 cell.label = label; // I manually cache/restore the object's label to avoid having to clone it for each cells
             }
-            tr.appendTo(this.dom.body);
+            this._trigger('rowinsert', [e, this]);
+            this.insertedRow.appendTo(this.dom.tbody);
+            this._trigger('rowinserted', [e, this]);
         },
 
         _createCell: function(cell, type, modifiers) {
@@ -166,16 +163,11 @@
          *  @type  string           Node type of the cell ("td" or "th") 
          *
          * */
-        cellModifiers: {
-            label: function(el, cell){ el.find('div').text(cell.label); },
-            align: function(el, cell){ el.find('div').andSelf().css('text-align', cell.align); }
-        },
+        cellModifiers: {},
 
         parsers: {
-            html: function(i) {
-            },
-            json: function(i) {
-            }
+            html: function(i) {},
+            json: function(i) {}
         }
     });
 
@@ -183,10 +175,43 @@
 
 $.ui.plugin.add('hygrid', 'core', {
     initialize: function(e, ui) {
+        $.extend($.ui.hygrid.cellModifiers, {
+            label: function(el, cell, type){ 
+                if (type == 'th') {
+                    el.find('div').text(cell.label); 
+                }
+                else {
+                    el.text(cell.label); 
+                }
+            },
+            align: function(el, cell){ 
+                el.find('div').andSelf().css('text-align', cell.align); 
+            }
+        });
+        if (ui.element.get(0).nodeName == 'TABLE') {
+            ui.dom.table   = ui.element;
+            ui.dom.wrapper = ui.dom.table.wrap('<div />').parent();
+        }
+        else {
+            ui.dom.wrapper = ui.element;
+            ui.dom.table   = ui.dom.wrapper.find('table');
+        }
+        ui.dom.wrapper.addClass('ui-hygrid').data('hygrid', ui);
     },
     resized: function(e, ui) {
         ui._setGridWidth();
     },
+});
+
+$.ui.plugin.add('hygrid', 'caption', {
+    initialize: function(e, ui) {
+        ui.options = $.extend({caption: false}, ui.options);
+    },
+    initialized: function(e, ui) { 
+        if (ui.options.caption) {
+            $.tpl('hygrid.caption', {caption: ui.options.caption}).prependTo(ui.dom.table);
+        }
+    }
 });
 
 $.ui.plugin.add('hygrid', 'width', {
@@ -199,9 +224,9 @@ $.ui.plugin.add('hygrid', 'width', {
             }
         });
     },
-    colhided: function(e, ui) {
+    coltoggled: function(e, ui) {
         var $ths = $('th:visible', ui.dom.header);
-        $ths.eq($ths.length - 1).css('width', 'auto');
+        $ths.eq($ths.length - 2).css('width', 'auto');
         ui._trigger('resized', e, ui);
     }
 });

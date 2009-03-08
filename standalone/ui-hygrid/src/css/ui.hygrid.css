@@ -2,6 +2,12 @@
     background:#ddd;
     border:1px solid #ccc;
 }
+.ui-hygrid-caption {
+    border:0 none;
+    font-size:60%;
+    padding:6px;
+    text-align:left;
+}
 .ui-hygrid table {
     margin:0;padding:0;
     background:#ddd;
@@ -11,7 +17,7 @@
     font-weight:normal;
     white-space:nowrap;
     text-align:left;
-    color:ButtonText;
+    color:#555;
     background-color:ThreeDFace;
     border-width:1px;
     border-color:ThreeDHighlight  ThreeDShadow ThreeDShadow ThreeDLightShadow;

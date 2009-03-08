@@ -51,7 +51,7 @@
     });
 
     test("Core methods", function() {
-        expect(14);
+        expect(15);
         var testdiv = $('<div />').appendTo('#main');
         testdiv.html(testtable).hygrid();
         testdiv.hygrid('col', 0).data('test', 'abc');
@@ -63,9 +63,11 @@
         equals($('tbody td:eq(1)', testdiv).data('test'), 'def', "hygrid.col: tbody second col OK (exlude header)");
         testdiv.one('click', function(e){ ok(e, "hygrid.trigger: OK"); }).trigger('click');
         testdiv.bind('click.test', function(e){ ok(e, "hygrid.bind: OK"); }).trigger('click');
-        equals(testdiv.hygrid('row', 0).text(), 'A1', "hygrid.col: OK (0)");
-        equals(testdiv.hygrid('row', 1).text(), 'B2', "hygrid.col: OK (1)");
-        equals(testdiv.hygrid('cells').text(), 'A1B2', "hygrid.cells: OK");
+        equals(testdiv.hygrid('row', 0).text(), 'A1', "hygrid.row: OK (0)");
+        equals(testdiv.hygrid('row', 1).text(), 'B2', "hygrid.row: OK (1)");
+        testdiv.hygrid('row', ['C','3']);
+        equals(testdiv.hygrid('row', 2).text(), 'C3', "hygrid.row: insert OK (2)");
+        equals(testdiv.hygrid('cells').text(), 'A1B2C3', "hygrid.cells: OK");
         equals(testdiv.hygrid('cell', 0, 0).text(), 'A', "hygrid.cell: OK (0)");
         equals(testdiv.hygrid('cell', 1, 0).text(), '1', "hygrid.cell: OK (1)");
         equals(testdiv.hygrid('cell', 0, 1).text(), 'B', "hygrid.cell: OK (2)");
@@ -74,12 +76,17 @@
     });
 
     test("Core options", function() {
-        expect(2);
+        expect(4);
         var testdiv = $('<div />').appendTo('#main');
         testdiv.hygrid('destroy').html(testtable).hygrid({width: 500});
         ok(testdiv.width() == 500, "hygrid.options.width: 500 OK");
         testdiv.hygrid('destroy').html(testtable).hygrid({width: 'fill'});
         ok(testdiv.width() == testdiv.parent().width(), "hygrid.options.width: fill OK");
+        testdiv.remove();
+        var testdiv = $('<div />').appendTo('#main');
+        testdiv.hygrid('destroy').html(testtable).hygrid({caption: 'ABC123'});
+        ok(testdiv.find('table > caption').get(0), "hygrid.options.caption: OK (0)");
+        equals(testdiv.find('table > caption').text(), 'ABC123', "hygrid.options.caption: OK (1)");
         testdiv.remove();
     });
 

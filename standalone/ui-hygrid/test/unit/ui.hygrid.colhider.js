@@ -22,64 +22,68 @@
         testdiv.remove();
     });
     test("ui interaction", function() {
-        expect(9);
+        expect(13);
         var testdiv = $('<div />').appendTo('#main');
         testdiv.html(testtable).hygrid({colhider:true});
-
-        ok(testdiv.find('th:last').trigger('mouseover').hasClass('ui-state-hover'), "th classe hover OK (3)");
-        ok(testdiv.find('th:last').trigger('mouseleave').hasClass('ui-state-default'), "th classe hover OK (4)");
-        ok(testdiv.find('.ui-hygrid-p-colhider-menu').is(':hidden'), "menu toggle (0)");
-
-        $('.ui-hygrid-p-colhider', testdiv).trigger('click');
-        ok(testdiv.find('.ui-hygrid-p-colhider-menu').is(':visible'), "menu toggle (1)");
+        
+        ok(testdiv.find('th:last').trigger('mouseover').hasClass('ui-state-hover'), "th classe hover OK (3)"); // 1
+        ok(testdiv.find('th:last').trigger('mouseleave').hasClass('ui-state-default'), "th classe hover OK (4)"); // 2
+        ok(testdiv.find('.ui-hygrid-p-colhider-menu').is(':hidden'), "menu toggle (0)"); // 3
 
         $('.ui-hygrid-p-colhider', testdiv).trigger('click');
-        ok(testdiv.find('.ui-hygrid-p-colhider-menu').is(':hidden'), "menu toggle (2)");
-        testdiv.find('.ui-hygrid-p-colhider').trigger('click');
-        testdiv.bind('coltoggled', function(){
-            ok(testdiv.find('tbody tr:eq(0) td:eq(0)').is(':hidden'), "hide col OK (0)");
-            start();
-        });
-        testdiv.find('.ui-hygrid-p-colhider-menu li:eq(0)').trigger('click');
-        stop();
+        ok(testdiv.find('.ui-hygrid-p-colhider-menu').is(':visible'), "menu toggle (1)"); // 4
 
-        testdiv.find('.ui-hygrid-p-colhider').trigger('click');
-        testdiv.bind('colhided', function(){
-            ok(testdiv.find('tbody tr:eq(0) td:eq(1)').is(':hidden'), "hide col OK (1)");
-            start();
-        });
-        testdiv.find('.ui-hygrid-p-colhider-menu li:eq(1)').trigger('click');
-        stop();
+        $('.ui-hygrid-p-colhider', testdiv).trigger('click');
+        ok(testdiv.find('.ui-hygrid-p-colhider-menu').is(':hidden'), "menu toggle (2)"); // 5
 
         testdiv.find('.ui-hygrid-p-colhider').trigger('click');
         testdiv.find('.ui-hygrid-p-colhider-menu li:eq(0)').trigger('click');
-        stop();
-        testdiv.bind('colhided', function(){
-            ok(testdiv.find('tbody tr:eq(0) td:eq(0)').is(':visible'), "show col OK (0)");
-            start();
-        });
+        ok(testdiv.find('.ui-hygrid-p-colhider-menu li:eq(0) label input').is(':checked'), "input checked (0)"); // 6
+        ok(testdiv.find('tbody tr:eq(0) td:eq(0)').is(':visible'), "show col OK (0)"); // 7
 
         testdiv.find('.ui-hygrid-p-colhider').trigger('click');
         testdiv.find('.ui-hygrid-p-colhider-menu li:eq(1)').trigger('click');
+        ok(testdiv.find('tbody tr:eq(0) td:eq(1)').is(':visible'), "show col OK (1)"); // 8
+
+        testdiv.one('gridcoltoggled', function(){
+            ok(testdiv.find('tbody tr:eq(0) td:eq(0)').is(':hidden'), "hide col OK (0)"); // 9
+            start();
+        });
+        testdiv.find('.ui-hygrid-p-colhider').trigger('click');
+        testdiv.find('.ui-hygrid-p-colhider-menu li:eq(0) input').trigger('click');
         stop();
-        testdiv.bind('colhided', function(){
-            ok(testdiv.find('tbody tr:eq(0) td:eq(1)').is(':visible'), "show col OK (1)");
+
+        testdiv.one('gridcoltoggled', function(){
+            ok(testdiv.find('tbody tr:eq(0) td:eq(0)').is(':hidden'), "hide col OK (1)"); // 10
+            start();
+        });
+        testdiv.find('.ui-hygrid-p-colhider').trigger('click');
+        testdiv.find('.ui-hygrid-p-colhider-menu li:eq(0)').trigger('click');
+        stop();
+
+
+        testdiv.one('gridcoltoggled', function(){
+            ok(testdiv.find('tbody tr:eq(0) td:eq(1)').is(':visible'), "show col OK (0)"); // 11
             start();
         });
         
         testdiv.find('.ui-hygrid-p-colhider').trigger('click');
-        testdiv.find('.ui-hygrid-p-colhider-menu li:eq(0)').trigger('click');
-        ok(testdiv.find('.ui-hygrid-p-colhider-menu li:eq(0) label input').is(':checked'), "input checked (0)");
-        ok(testdiv.find('tbody tr:eq(0) td:eq(0)').is(':visible'), "show col OK (0)");
-        
-        testdiv.find('.ui-hygrid-p-colhider').trigger('click');
         testdiv.find('.ui-hygrid-p-colhider-menu li:eq(1)').trigger('click');
-        ok(testdiv.find('tbody tr:eq(0) td:eq(1)').is(':visible'), "show col OK (1)");
-        testdiv.remove();
         stop();
+
+        testdiv.one('gridcoltoggled', function(){
+            ok(testdiv.find('tbody tr:eq(0) td:eq(1)').is(':visible'), "show col OK (1)"); // 12
+            start();
+        });
+        testdiv.find('.ui-hygrid-p-colhider').trigger('click');
+        testdiv.find('.ui-hygrid-p-colhider-menu li:eq(0)').trigger('click');
+        stop();
+        
         setTimeout(function(){
             ok($('.ui-hygrid-p-colhider-menu', testdiv).is(':hidden'), 'menu hides after click');
             start();
-        }, 200);
+            testdiv.remove();
+        }, 150);
+        stop();
     });
 })(jQuery);

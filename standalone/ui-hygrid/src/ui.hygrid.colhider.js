@@ -10,11 +10,16 @@
 */
 
 $.tpl('colhider.menu',     '<ul class="ui-hygrid-p-colhider-menu ui-helper-hidden ui-helper-reset" />');
-$.tpl('colhider.menuItem', '<li class="ui-corner-all ui-helper-reset"><label><input type="checkbox" {c:s} /> {label:s}</label></li>');
+$.tpl('colhider.menuItem', '<li class="ui-corner-all ui-helper-reset"><label><input type="checkbox" /> {label:s}</label></li>');
 
 $.ui.plugin.add('hygrid', 'colhider', {
+    rowinserted: function(e, ui) {
+        ui.insertedRow.append('<td>&nbsp;</td>');
+    },
     coltoggled: function(e, ui) {
-        ui._trigger('resized');
+        if (ui.options.width == 'auto') {
+            ui._trigger('resized');
+        }
     },
     initialized: function(e, ui) {
         ui.options = $.extend({colhider: true}, ui.options);
@@ -32,21 +37,23 @@ $.ui.plugin.add('hygrid', 'colhider', {
             $th = ui.dom.thead.find('th');
             // create menu
             $th.slice(0, $th.length).each(function(i){
+                var e   = $.Event();
                 var lbl = $(this).find('div:first-child').text();
                 $.tpl('colhider.menuItem', {label: lbl})
                     .data('colindex', i)
                     .bind('click.colhider', function(){
                         var $self = $(this);
                         var menu  = $self.parents('ul');
+                        ui.toggledCol = ui.col($self.data('colindex'));
                         if ($self.find('input:checked').length > 0) {
-                            ui.col($self.data('colindex')).show();
+                            ui.toggledCol.show();
                         }
                         else {
-                            ui.col($self.data('colindex')).hide();
+                            ui.toggledCol.hide();
                         }
                         setTimeout(function() {
                             menu.hide();
-                            ui._trigger('coltoggled');
+                            ui._trigger('coltoggled', [e, ui]);
                         }, 100); // let the user see the check mark before hiding
                     })
                     .find('input')
