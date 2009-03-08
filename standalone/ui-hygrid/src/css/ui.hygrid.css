@@ -9,14 +9,15 @@
 .ui-hygrid table thead th {
     font-size:70%;
     font-weight:normal;
-    background-color:ThreeDFace;
+    white-space:nowrap;
+    text-align:left;
     color:ButtonText;
+    background-color:ThreeDFace;
     border-width:1px;
     border-color:ThreeDHighlight  ThreeDShadow ThreeDShadow ThreeDLightShadow;
     border-style:solid;
     padding:4px;
     overflow-x:hidden;
-    white-space:nowrap;
 }
 .ui-hygrid table thead th:last-child {
     border-right:0;
