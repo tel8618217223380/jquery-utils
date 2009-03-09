@@ -31,10 +31,10 @@ $.ui.plugin.add('hygrid', 'colhider', {
         });
         
         if (ui.options.colhider) {
-            ui.dom.colhidermenu = $.tpl('colhider.menu').prependTo(ui.dom.wrapper);
-            ui.dom.tbody.find('tr').append('<td>&nbsp;</td>');
+            ui._ui('colhidermenu ', $.tpl('colhider.menu').prependTo(ui._ui('wrapper')));
+            ui._ui('tbody').find('tr').append('<td>&nbsp;</td>');
             ui._fixCellIndex   = ui._fixCellIndex + 1;
-            $th = ui.dom.thead.find('th');
+            $th = ui._ui('thead').find('th');
             // create menu
             $th.slice(0, $th.length).each(function(i){
                 var e   = $.Event();
@@ -53,25 +53,24 @@ $.ui.plugin.add('hygrid', 'colhider', {
                         }
                         setTimeout(function() {
                             menu.hide();
-                            ui._trigger('coltoggled', [e, ui]);
+                            ui._trigger('coltoggled');
                         }, 100); // let the user see the check mark before hiding
                     })
                     .find('input')
                         .attr('checked', !ui._getColOptions(i, 'hide')).end()
-                    .appendTo(ui.dom.colhidermenu);
+                    .appendTo(ui._ui('colhidermenu '));
             });
             // create button
             $('<th class="ui-hygrid-p-colhider ui-state-default"><span class="ui-icon ui-icon-gridmenu" />').width(16)
                 .bind('click.colhider', function() {
-                    ui.dom.colhidermenu.css({
-                        top: ui.dom.tbody.position().top,
+                    ui._ui('colhidermenu ').css({
+                        top: ui._ui('tbody').position().top,
                         left: $(this).position().left
                     }).toggle();
                 })
                 .hover(function(){ $(this).addClass('ui-state-hover');}, 
                        function(){ $(this).removeClass('ui-state-hover'); 
-                }).appendTo(ui.dom.thead.find('tr'));
-            ui._trigger('coltoggled');
+                }).appendTo(ui._ui('thead').find('tr'));
         }
     }
 });

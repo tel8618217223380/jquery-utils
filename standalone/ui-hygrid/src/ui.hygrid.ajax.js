@@ -58,41 +58,20 @@
         }
     };
 }})(jQuery);
-(function($) {if ($.ui.hygrid){
-    $.ui.hygrid.plugins.header = {
-        _init: function() {
-            this.options = $.extend({
-                header: true
-            }, this.options);
-            var thead    = this.ui.table.find('thead');
-            this.ui.head = thead.get(0) && thead || $('<thead><tr /></thead>').prependTo(this.ui.table);
-        },
-        _ready: function() {
-            var widget = this;
-            console.log(widget.ui.head.find('th').length);
-            
-        /*
-            var tb = this.ui.wrapper.find('table');
-            var tr = $('<tr />');
-            var fromTable = tb.find('thead th').get(0);
-            console.log($('th', tb).get(0));
-            for (x in this.options.cols) {
-                var cell = this.options.cols[x];
-                if (fromTable) {
-                    var el = tb.find('thead th').eq(x).addClass('ui-state-default');
-                    this._applyCellModifiers(el, cell);
-                }
-                else {
-                    widget._createCell(cell, 'th').appendTo(tr);
-                }
-                this.ui.header.append(tr);
-            }
-            console.log($.ui.hygrid.plugins.header.this);
-            */
-            //if (widget.options.ajax && widget.options.url && widget.options.url != '') ? true: false;
-        /*
-            this.ui.header = this.ui.table.find('thead');
-            */
-        }
-    };
-}})(jQuery);
+
+    /*,
+    
+    _loadData: function() {
+        var widget = this;
+        $.ajax({
+            type:       widget.options.method,
+            url:        widget.options.url,
+            data:       '', // params,
+            dataType:   widget.options.dataType,
+            success:    function(){ 
+                $.ui.hygrid.parsers[widget.options.dataType].apply(widget, arguments); 
+                widget.dom.wrapper.trigger('refreshed')
+            },
+            error: widget.options.onError
+        });
+    }*/
