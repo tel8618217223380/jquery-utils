@@ -21,6 +21,7 @@
         ok(testdiv.find('thead th:eq(1)').is(':hidden'), 'hygrid.cellModifiers.hide: false OK');
         testdiv.remove();
     });
+
     test("ui interaction", function() {
         expect(13);
         var testdiv = $('<div />').appendTo('#main');

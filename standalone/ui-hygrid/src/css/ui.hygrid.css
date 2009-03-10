@@ -58,7 +58,11 @@
 .ui-hygrid table tbody tr.ui-selected td {
     background-color:#def;
 }
-.ui-hygrid table tfoot {}
+.ui-hygrid table tfoot td {
+    border-top:1px solid ThreeDShadow;
+    font-size:12px;
+    padding:2px 4px;
+}
 .ui-hygrid-p-colhider {
 }
 .ui-hygrid-p-colhider .ui-icon-gridmenu {

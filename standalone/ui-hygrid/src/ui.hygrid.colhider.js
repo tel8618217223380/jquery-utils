@@ -31,10 +31,12 @@ $.ui.plugin.add('hygrid', 'colhider', {
         });
         
         if (ui.options.colhider) {
-            ui._ui('colhidermenu ', $.tpl('colhider.menu').prependTo(ui._ui('wrapper')));
-            ui._ui('tbody').find('tr').append('<td>&nbsp;</td>');
-            ui._fixCellIndex   = ui._fixCellIndex + 1;
-            $th = ui._ui('thead').find('th');
+            ui._dom('colhidermenu ', $.tpl('colhider.menu').prependTo(ui._dom('wrapper')));
+            var thead = ui._dom('thead');
+            var tbody = ui._dom('tbody');
+            var menu  = ui._dom('colhidermenu ');
+            ui._fixCellIndex = ui._fixCellIndex + 1;
+            $th = thead.find('th');
             // create menu
             $th.slice(0, $th.length).each(function(i){
                 var e   = $.Event();
@@ -58,53 +60,19 @@ $.ui.plugin.add('hygrid', 'colhider', {
                     })
                     .find('input')
                         .attr('checked', !ui._getColOptions(i, 'hide')).end()
-                    .appendTo(ui._ui('colhidermenu '));
+                    .appendTo(menu);
             });
             // create button
             $('<th class="ui-hygrid-p-colhider ui-state-default"><span class="ui-icon ui-icon-gridmenu" />').width(16)
                 .bind('click.colhider', function() {
-                    ui._ui('colhidermenu ').css({
-                        top: ui._ui('tbody').position().top,
+                    menu.css({
+                        top: tbody.position().top,
                         left: $(this).position().left
                     }).toggle();
                 })
                 .hover(function(){ $(this).addClass('ui-state-hover');}, 
                        function(){ $(this).removeClass('ui-state-hover'); 
-                }).appendTo(ui._ui('thead').find('tr'));
+                }).appendTo(thead.find('tr'));
         }
     }
 });
-
-
-                        /*
-                        if (ui.options.cols && ui.options.cols[i] && ui.options.cols[i].hide) {
-                            ui.col(i).hide();
-                        }
-                        */
-    /*
-                    ui.dom.colhiderlist = $('<ul class="ui-hygrid-p-colhider-list ui-helper-hidden ui-helper-reset" />').prependTo(ui.dom.wrapper);
-                    for (x in ui.options.cols) {
-                        var checked = (typeof(ui.options.cols[x].hide) == 'undefined')? 'checked="checked"': '';
-
-                        $($.format('<li class="ui-corner-all ui-helper-reset"><label><input id="col-{id:d}" type="checkbox" {c:s} /> {l:s}</label></li>', 
-                                   {id: x, l: ui.options.cols[x].label, c: checked}))
-                            .hover(function(){ $(this).addClass('ui-state-hover');}, 
-                                   function(){ $(this).removeClass('ui-state-hover'); })
-                            .bind('change.colhider', function(){
-                                if ($('input:checked', ui.dom.colhiderlist).length >= 1) {
-                                    var id  = parseInt($('input', this).attr('id').match(/\d+/gi)[0], 10);
-                                    ui.dom.body.find('td').attr('colspan', 1);
-                                    ui._col(id)[$('input', this).attr('checked') && 'show' || 'hide']();
-                                    ui._visibleCol(ui.dom.body.find('tr:eq(0) td:visible').length-1, true).attr('colspan', 2);
-                                    ui._fixCellWidth();
-                                }
-                                else {
-                                    $('input', this).attr('checked', true);
-                                }
-                                ui._fixCellWidth();
-                                ui.dom.colhiderlist.hide();
-                            })
-                            .appendTo(ui.dom.colhiderlist);
-                    }
-
-                    */

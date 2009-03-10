@@ -1,26 +1,28 @@
 /*
-  jQuery ui.hygrid.ledger - @VERSION
+  jQuery ui.hygrid.ledger
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
   http://haineault.com
 
   MIT License (http://www.opensource.org/licenses/mit-license.php
-
 */
+(function($){
 
-(function($) {if ($.ui.hygrid) {
-    $.ui.hygrid.plugins.ledger = {
-        _init: function() {
-            this.options = $.extend({ledger: true}, this.options);
-        },
-        _ready: function() {
-            var widget = this;
-            widget.bind('refreshed.ledger', function() {
-                widget.ui.body.find('tr')
-                    .filter(':odd').addClass('odd').end()
-                    .filter(':even').addClass('even');
-            });
-        }
-    };
-}})(jQuery);
+function applyLedger(ui) {
+    ui._dom('tbody').find('tr')
+        .filter(':odd').addClass('odd').end()
+        .filter(':even').addClass('even');
+}
+
+$.ui.hygrid.defaults.ledger = true;
+$.ui.plugin.add('hygrid', 'ledger', {
+    initialized: function(e, ui) { 
+        applyLedger(ui);
+    },
+    dataloaded: function(e, ui) { 
+        applyLedger(ui);
+    }
+});
+
+})(jQuery);

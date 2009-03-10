@@ -116,7 +116,6 @@
         var testdiv = $('<div />').appendTo('#main');
         testdiv.html(testtable).hygrid({cols: [{align: 'left'}, {align: 'center'}]});
 
-
         equals(testdiv.find('thead th:eq(0)').css('text-align'), 'left', 'hygrid.cellModifiers.align: OK (0)');
         equals(testdiv.find('thead th:eq(1)').css('text-align'), 'center', 'hygrid.cellModifiers.align: OK (1)');
         testdiv.remove();
