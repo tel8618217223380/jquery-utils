@@ -34,9 +34,7 @@ $.ui.plugin.add('hygrid', 'colhider', {
         });
     },
     initialized: function(e, ui) {
-        console.log(ui);
         ui.options = $.extend({colhider: true}, ui.options);
-
         
         if (ui.options.colhider) {
             ui._dom('colhidermenu ', $.tpl('colhider.menu').prependTo(ui._dom('wrapper')));

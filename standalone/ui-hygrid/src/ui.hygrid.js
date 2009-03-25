@@ -188,9 +188,7 @@ $.ui.plugin.add('hygrid', 'core', {
     initialized: function(e, ui) {
         var cols = ui.options.colhider && ui.cols()+1 || ui.cols();
         if (ui.options.toolbarTop) {
-            console.log('test');
             ui._dom('toolbarTop', $.tpl('hygrid.toolbarTop').prependTo(ui._dom('table')).find('td:first').attr('colspan', cols));
-            console.log('test', ui._dom('toolbarTop'));
         }
         if (ui.options.toolbarBottom) {
             ui._dom('toolbarBottom', $.tpl('hygrid.toolbarBottom').appendTo(ui._dom('table')).find('td:first').attr('colspan', cols));
