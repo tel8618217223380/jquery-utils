@@ -13,22 +13,30 @@ $.tpl('colhider.menu',     '<ul class="ui-hygrid-p-colhider-menu ui-helper-hidde
 $.tpl('colhider.menuItem', '<li class="ui-corner-all ui-helper-reset"><label><input type="checkbox" /> {label:s}</label></li>');
 
 $.ui.plugin.add('hygrid', 'colhider', {
+    ui: {
+        menu: '.ui-hygrid-p-colhider-menu'
+    },
     rowinserted: function(e, ui) {
-        ui.insertedRow.append('<td>&nbsp;</td>');
+        ui.insertedRow.append('<td class="ui-hygrid-blank">&nbsp;</td>');
+    },
+    colhide: function(e, ui) {
     },
     coltoggled: function(e, ui) {
         if (ui.options.width == 'auto') {
             ui._trigger('resized');
         }
     },
-    initialized: function(e, ui) {
-        ui.options = $.extend({colhider: true}, ui.options);
-
+    initialize: function(e, ui) {
         $.extend($.ui.hygrid.cellModifiers, {
             hide:  function(el, cell, type){ 
                 if (cell.hide) { el.hide(); } 
             }
         });
+    },
+    initialized: function(e, ui) {
+        console.log(ui);
+        ui.options = $.extend({colhider: true}, ui.options);
+
         
         if (ui.options.colhider) {
             ui._dom('colhidermenu ', $.tpl('colhider.menu').prependTo(ui._dom('wrapper')));
@@ -38,6 +46,7 @@ $.ui.plugin.add('hygrid', 'colhider', {
             ui._fixCellIndex = ui._fixCellIndex + 1;
             $th = thead.find('th');
             // create menu
+            // TODO: when input:checked.length == 1 disable clicking
             $th.slice(0, $th.length).each(function(i){
                 var e   = $.Event();
                 var lbl = $(this).find('div:first-child').text();

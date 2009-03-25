@@ -14,8 +14,11 @@
   - jquery.ui.js
 
 */
-
 (function($) {
+
+$.tpl('hygrid.button',        '<button class="ui-state-default ui-corner-all">{label:s}</button>');
+$.tpl('hygrid.toolbarTop',    '<thead class="ui-hygrid-toolbar top ui-widget-header"><tr><td></td></tr></thead>');
+$.tpl('hygrid.toolbarBottom', '<tfoot class="ui-hygrid-toolbar bottom ui-widget-header"><tr><td></td></tr></tfoot>');
 
 $.widget('ui.hygrid', {
     dom: {},
@@ -106,11 +109,6 @@ $.widget('ui.hygrid', {
         return this._applyCellModifiers(el, cell, modifiers);
     },
 
-    _toolbar: function(ns, el, prepend) {
-        this._dom(ns, el);
-        this._dom('tfoot').find('tr:first td:first')[prepend && 'prepend' || 'append'](el);
-    },
-
     _applyCellModifiers: function(el, cell, col, modifiers){
         var $el = $(el);
         var mod = modifiers || $.keys($.ui.hygrid.cellModifiers);
@@ -186,24 +184,16 @@ $.ui.plugin.add('hygrid', 'core', {
             ui._dom('table',   ui.element.find('table'));
         }
         ui._dom('wrapper').addClass('ui-hygrid');
-        ui._dom('tfoot', $('<tfoot class="ui-hygrid-toolbar ui-widget-header"><tr><td></td></tr></tfoot>').appendTo(ui._dom('table')));
-    },
-    dataloaded: function(e, ui) {
-        if (ui.options.colhider) {
-            ui._dom('tfoot').find('tr:first td:first').attr('colspan', ui.cols()+1);
-        }
-        else {
-            ui._dom('tfoot').find('tr:first td:first').attr('colspan', ui.cols());
-        }
     },
     initialized: function(e, ui) {
-        if (ui.options.toolbar) {
-            if (ui.options.colhider) {
-                ui._dom('tfoot').find('tr:first td:first').attr('colspan', ui.cols()+1);
-            }
-            else {
-                ui._dom('tfoot').find('tr:first td:first').attr('colspan', ui.cols());
-            }
+        var cols = ui.options.colhider && ui.cols()+1 || ui.cols();
+        if (ui.options.toolbarTop) {
+            console.log('test');
+            ui._dom('toolbarTop', $.tpl('hygrid.toolbarTop').prependTo(ui._dom('table')).find('td:first').attr('colspan', cols));
+            console.log('test', ui._dom('toolbarTop'));
+        }
+        if (ui.options.toolbarBottom) {
+            ui._dom('toolbarBottom', $.tpl('hygrid.toolbarBottom').appendTo(ui._dom('table')).find('td:first').attr('colspan', cols));
         }
     },
     resized: function(e, ui) {

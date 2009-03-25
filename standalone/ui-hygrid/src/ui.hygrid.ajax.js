@@ -32,6 +32,7 @@ $.extend($.ui.hygrid.defaults, {
 $.ui.plugin.add('hygrid', 'ajax', {
     initialize: function(e, ui) {
         if (ui.options.url && ui.options.ajax) {
+            ui._trigger('dataloading');
             $.ajax({
                 type:       ui.options.method,
                 url:        ui.options.url,
@@ -46,65 +47,15 @@ $.ui.plugin.add('hygrid', 'ajax', {
         }
     },
     dataloaded: function(e, ui) {
+        var cols = ui.options.colhider && ui.cols()+1 || ui.cols();
         $.ui.hygrid.parsers[ui.options.dataType].apply(ui); 
+        if (ui.options.toolbarTop) {
+            ui._dom('toolbarTop').attr('colspan', cols);
+        }
+        if (ui.options.toolbarBottom) {
+            ui._dom('toolbarBottom').attr('colspan', cols);
+        }
     }
 });
 
 })(jQuery);
-    /*,
-(function($) {if ($.ui.hygrid){
-    $.ui.hygrid.plugins.ajax = {
-        _init: function() {
-            this._inithygrid = function() {
-                this.ui.wrapper.trigger('refresh');
-                console.log('test');
-            };
-        },
-        _ready: function() {
-            var widget = this;
-            widget.bind('refresh', function(){
-                if (widget.options.url) {
-                    $.ajax({
-                        type:       widget.options.method,
-                        url:        widget.options.url,
-                        data:       '', // params,
-                        dataType:   widget.options.dataType,
-                        success:    function(){ 
-                            $.ui.hygrid.plugins.ajax.parsers[widget.options.dataType].apply(widget, arguments); 
-                            widget.ui.wrapper.trigger('refreshed')
-                        },
-                        error: widget.options.onError
-                    });
-                }
-            });
-        },
-
-        // parsers are used to extend data types (json/xml/..)
-        // the parser are basically callback function for jQuery.ajax's onSuccess
-        // http://docs.jquery.com/Ajax/jQuery.ajax#options
-        //
-        parsers: {
-            json: function(data) {
-                for (r in data.rows) {
-                    try { this._createRow(data.rows[r].id, data.rows[r].cell); } catch(e) {};
-                }
-            }
-        }
-    };
-}})(jQuery);
-
-    
-    _loadData: function() {
-        var widget = this;
-        $.ajax({
-            type:       widget.options.method,
-            url:        widget.options.url,
-            data:       '', // params,
-            dataType:   widget.options.dataType,
-            success:    function(){ 
-                $.ui.hygrid.parsers[widget.options.dataType].apply(widget, arguments); 
-                widget.dom.wrapper.trigger('refreshed')
-            },
-            error: widget.options.onError
-        });
-    }*/

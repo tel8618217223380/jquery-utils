@@ -13,17 +13,18 @@ $.ui.hygrid.defaults.pagination = true;
 $.ui.hygrid.defaults.page = 1;
 $.ui.hygrid.defaults.rpp  = 15;
 
-$.tpl('hygrid.pagination', '<caption class="ui-hygrid-caption ui-widget-header">{caption:s}</caption>');
-
 $.ui.plugin.add('hygrid', 'pagination', {
     initialize: function(e, ui) {
+        ui.options.toolbarTop = true;
+        ui.options.toolbarBottom = true;
     },
     initialized: function(e, ui) { 
         var $tr = ui._dom('tbody').find('tr');
         if (ui.options.pagination && ui.options.rpp) {
             $tr.slice(ui.options.rpp+1, $tr.length).hide();
         }
-        ui._toolbar('nextbutton', $('<button>NAXT</button>'));
+        $.tpl('hygrid.button', {label: 'next'}).appendTo(ui._dom('toolbarTop'));
+        $.tpl('hygrid.button', {label: 'next'}).appendTo(ui._dom('toolbarBottom'));
     }
 });
 
