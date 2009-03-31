@@ -102,3 +102,13 @@ ul.ui-hygrid-p-colhider-menu li {
 .ui-hygrid-p-colhider-menu li label input {
     float:left;
 }
+
+.ui-hygrid table thead button[disabled],
+.ui-hygrid table tfoot button[disabled] {
+    color:#ccc;
+}
+
+.ui-hygrid-pager {
+    margin:0 10px;
+    font-size:80%;
+}

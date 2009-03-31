@@ -38,6 +38,7 @@ $.ui.plugin.add('hygrid', 'htmltable', {
                         ui._applyCellModifiers(thead.find('.ui-hygrid-header').eq(x), ui.options.cols[x], x);
                     }
                 });
+        ui.options.total = ui._('tbody').find('tr').length;
         ui._trigger('resized');
     }
 });

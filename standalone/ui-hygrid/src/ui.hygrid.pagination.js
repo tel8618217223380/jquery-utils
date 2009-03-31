@@ -12,7 +12,8 @@
 $.extend($.ui.hygrid.defaults, {
     pagination: true,
     page: 1,
-    rpp: 10
+    rpp: 5,
+    pager: '{start:d}-{end:d}/{total:d}, page: {page:d} of {pagetotal:d}'
 });
 
 $.ui.plugin.add('hygrid', 'pagination', {
@@ -23,13 +24,17 @@ $.ui.plugin.add('hygrid', 'pagination', {
         
         ui._('pager.next', $.tpl('hygrid.button', {label: 'next'}));
         ui._('pager.prev', $.tpl('hygrid.button', {label: 'prev'}));
+        if (ui.options.pager) {
+            ui._('pager.pager', $('<span class="ui-hygrid-pager" />'));
+        }
     },
 
     initialized: function(e, ui) { 
         if (ui.options.pagination) {
+
             ui._('pager.prev')
                 .bind('click.pagination', function(){
-                    ui.options.page = ui.options.page - 1;
+                    ui.options.page = ui.options.page > 1 && ui.options.page - 1 || 1;
                     ui._trigger('gridupdate');
                 })
                 .appendTo(ui._('toolbarBottom'));
@@ -39,6 +44,10 @@ $.ui.plugin.add('hygrid', 'pagination', {
                     ui._trigger('gridupdate');
                 })
                 .appendTo(ui._('toolbarBottom'));
+            if (ui.options.pager) {
+                ui._('pager.pager').appendTo(ui._('toolbarBottom'));
+            }
+
             if (!ui.options.ajax) {
                 ui._trigger('gridupdate');
             }
@@ -52,11 +61,33 @@ $.ui.plugin.add('hygrid', 'pagination', {
                 var end   = ui.options.page * ui.options.rpp;
                 var start = (ui.options.page *  ui.options.rpp) - ui.options.rpp;
                 var $tr = ui._('tbody').find('tr');
-                console.log('Pager -- page: %s, rpp: %s, start: %s, end: %s, total: %s', ui.options.page, ui.options.rpp, start, end, $tr.length);
-                $tr.show().slice(start, end).hide();
+                
+                ui._('pager.next').attr('disabled', false);
+                ui._('pager.prev').attr('disabled', false);
+
+                if (start == 0) {
+                    ui._('pager.prev').attr('disabled', true);
+                }
+                else if (end > $tr.length) {
+                    ui._('pager.next').attr('disabled', true);
+                    start = $tr.length - ui.options.rpp;
+                    end = ui.options.total;
+                }
+
+                $tr.hide().slice(start, end).show();
+            }
+            if (ui.options.pager) {
+                ui._('pager.pager').text($.format(ui.options.pager, {
+                    page: ui.options.page,
+                    pagetotal: Math.max(ui.options.total/ui.options.rpp, 2) + 1,
+                    start: start,
+                    end: end,
+                    total: ui.options.total
+                }));
             }
         }
-    },
+        //console.log('Pager -- page: %s, rpp: %s, start: %s, end: %s, total: %s', ui.options.page, ui.options.rpp, start, end, ui.options.total);
+    }
 });
 
 })(jQuery);

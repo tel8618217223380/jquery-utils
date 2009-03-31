@@ -12,6 +12,7 @@
 $.extend($.ui.hygrid.defaults, {
     core: true,
     toolbar: true,
+    total: 0,
 });
 
 $.tpl('hygrid.button',        '<button class="ui-state-default ui-corner-all">{label:s}</button>');

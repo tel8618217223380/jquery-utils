@@ -68,7 +68,18 @@ $.ui.plugin.add('hygrid', 'ajax', {
         ui._trigger('resized');
     },
     dataloaded: function(e, ui) {
+        ui.options.total = parseInt(ui._data.total, 10);
+        ui.options.page  = parseInt(ui._data.page, 10);
         $.ui.hygrid.parsers[ui.options.dataType].apply(this, [e, ui]);
+        if (ui.options.pager && ui._('pager.pager')) {
+            ui._('pager.pager').text($.format(ui.options.pager, {
+                page: ui.options.page,
+                pagetotal: Math.max(ui.options.total/ui.options.rpp, 2),
+                start: (ui.options.page *  ui.options.rpp) - ui.options.rpp,
+                end: ui.options.page * ui.options.rpp,
+                total: ui.options.total
+            }));
+        }
     }
 });
 
