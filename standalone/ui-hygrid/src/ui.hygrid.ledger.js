@@ -10,7 +10,7 @@
 (function($){
 
 function applyLedger(ui) {
-    ui._dom('tbody').find('tr')
+    ui._('tbody').find('tr')
         .filter(':odd').addClass('odd').end()
         .filter(':even').addClass('even');
 }

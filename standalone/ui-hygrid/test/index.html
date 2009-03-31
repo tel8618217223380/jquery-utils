@@ -11,18 +11,20 @@
 	<script type="text/javascript" src="../page/jquery.utils.js"></script>
 	<script type="text/javascript" src="../page/jquery.strings.js"></script>
 	<script type="text/javascript" src="../src/ui.hygrid.js"></script>
+	<script type="text/javascript" src="../src/ui.hygrid.core.js"></script>
+	<script type="text/javascript" src="../src/ui.hygrid.htmltable.js"></script>
+	<script type="text/javascript" src="../src/ui.hygrid.ajax.js"></script>
 	<script type="text/javascript" src="../src/ui.hygrid.caption.js"></script>
 	<script type="text/javascript" src="../src/ui.hygrid.colhider.js"></script>
 	<script type="text/javascript" src="../src/ui.hygrid.ledger.js"></script>
 	<script type="text/javascript" src="../src/ui.hygrid.pagination.js"></script>
-	<script type="text/javascript" src="../src/ui.hygrid.ajax.js"></script>
     <script type="text/javascript">
 
     $(function(){
         $('#demo-1').hygrid({
             caption:'Hello World', 
             colhider: true, 
-            rpp: 20,
+            rpp: 10,
             page: 1,
             width:1000,
             cols: [{width:100}, {width:200}]

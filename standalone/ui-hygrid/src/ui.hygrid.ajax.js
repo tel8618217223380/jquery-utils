@@ -8,14 +8,15 @@
   MIT License (http://www.opensource.org/licenses/mit-license.php
 
 */
+
 (function($){
 
 
-$.ui.hygrid.parsers.json = function() {
-    for (x in this._data.rows) {
-        this._createRow(this._data.rows[x].cell);
+$.ui.hygrid.parsers.json = function(e, ui) {
+    for (x in ui._data.rows) {
+        ui._createRow(ui._data.rows[x].cell);
     }
-    this._setGridWidth();
+    ui._trigger('gridupdated');
 };
 
 $.extend($.ui.hygrid.defaults, {
@@ -24,14 +25,24 @@ $.extend($.ui.hygrid.defaults, {
     dataType: 'json', 
     data: '',
     method: 'get',
+    width: 'auto',
     onError: function(xr, ts, et) {
-        try { $.log(xr, ts, et); } catch (e) {};
+        try { console.log(xr, ts, et); } catch (e) {};
     }
 });
 
 $.ui.plugin.add('hygrid', 'ajax', {
     initialize: function(e, ui) {
         if (ui.options.url && ui.options.ajax) {
+            ui.options.htmltable = false;
+            ui._trigger('gridupdate');
+        }
+        else {
+            ui.options.ajax = false;
+        }
+    },
+    gridupdate: function(e, ui){
+        if (ui.options.ajax) {
             ui._trigger('dataloading');
             $.ajax({
                 type:       ui.options.method,
@@ -40,21 +51,24 @@ $.ui.plugin.add('hygrid', 'ajax', {
                     ui._data = data;
                     ui._trigger('dataloaded');
                 },
-                data:       ui.options.data,
+                data:       ui.params(),
                 dataType:   ui.options.dataType,
                 error:      ui.options.onError
             });
         }
     },
-    dataloaded: function(e, ui) {
+    gridupdated: function(e, ui) {
         var cols = ui.options.colhider && ui.cols()+1 || ui.cols();
-        $.ui.hygrid.parsers[ui.options.dataType].apply(ui); 
         if (ui.options.toolbarTop) {
-            ui._dom('toolbarTop').attr('colspan', cols);
+            ui._('toolbarTop').attr('colspan', cols);
         }
         if (ui.options.toolbarBottom) {
-            ui._dom('toolbarBottom').attr('colspan', cols);
+            ui._('toolbarBottom').attr('colspan', cols);
         }
+        ui._trigger('resized');
+    },
+    dataloaded: function(e, ui) {
+        $.ui.hygrid.parsers[ui.options.dataType].apply(this, [e, ui]);
     }
 });
 

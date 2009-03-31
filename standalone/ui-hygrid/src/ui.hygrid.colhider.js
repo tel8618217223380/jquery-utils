@@ -37,10 +37,10 @@ $.ui.plugin.add('hygrid', 'colhider', {
         ui.options = $.extend({colhider: true}, ui.options);
         
         if (ui.options.colhider) {
-            ui._dom('colhidermenu ', $.tpl('colhider.menu').prependTo(ui._dom('wrapper')));
-            var thead = ui._dom('thead');
-            var tbody = ui._dom('tbody');
-            var menu  = ui._dom('colhidermenu ');
+            ui._('colhidermenu ', $.tpl('colhider.menu').prependTo(ui._('wrapper')));
+            var thead = ui._('thead');
+            var tbody = ui._('tbody');
+            var menu  = ui._('colhidermenu ');
             ui._fixCellIndex = ui._fixCellIndex + 1;
             $th = thead.find('th');
             // create menu
