@@ -9,7 +9,7 @@
 
 */
 
-$.tpl('colhider.menu',     '<ul class="ui-hygrid-p-colhider-menu ui-helper-hidden ui-helper-reset" />');
+$.tpl('colhider.menu',     '<ul class="ui-hygrid-p-colhider-menu ui-helper-hidden ui-helper-reset ui-widget-content" />');
 $.tpl('colhider.menuItem', '<li class="ui-corner-all ui-helper-reset"><label><input type="checkbox" /> {label:s}</label></li>');
 
 $.ui.plugin.add('hygrid', 'colhider', {
@@ -43,6 +43,7 @@ $.ui.plugin.add('hygrid', 'colhider', {
             var menu  = ui._('colhidermenu ');
             ui._fixCellIndex = ui._fixCellIndex + 1;
             $th = thead.find('th');
+
             // create menu
             // TODO: when input:checked.length == 1 disable clicking
             $th.slice(0, $th.length).each(function(i){

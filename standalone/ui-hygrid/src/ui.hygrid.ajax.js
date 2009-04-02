@@ -33,8 +33,12 @@ $.extend($.ui.hygrid.defaults, {
 
 $.ui.plugin.add('hygrid', 'ajax', {
     initialize: function(e, ui) {
+        var table = ui._('table');
         if (ui.options.url && ui.options.ajax) {
             ui.options.htmltable = false;
+            ui._('thead', (table.find('thead').get(0) && table.find('thead') || $('<thead/>').prependTo(table)));
+            ui._('tbody', (table.find('tbody').get(0) && table.find('tbody') || $('<tbody/>').appendTo(table)));
+            ui._('thead').find('th').disableSelection().addClass('ui-state-default ui-hygrid-header');
             ui._trigger('gridupdate');
         }
         else {
@@ -70,6 +74,7 @@ $.ui.plugin.add('hygrid', 'ajax', {
     dataloaded: function(e, ui) {
         ui.options.total = parseInt(ui._data.total, 10);
         ui.options.page  = parseInt(ui._data.page, 10);
+        ui._('tbody').empty();
         $.ui.hygrid.parsers[ui.options.dataType].apply(this, [e, ui]);
         if (ui.options.pager && ui._('pager.pager')) {
             ui._('pager.pager').text($.format(ui.options.pager, {

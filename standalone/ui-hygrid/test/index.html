@@ -18,6 +18,7 @@
 	<script type="text/javascript" src="../src/ui.hygrid.colhider.js"></script>
 	<script type="text/javascript" src="../src/ui.hygrid.ledger.js"></script>
 	<script type="text/javascript" src="../src/ui.hygrid.pagination.js"></script>
+	<script type="text/javascript" src="../src/ui.hygrid.selectable.js"></script>
     <script type="text/javascript">
 
     $(function(){
@@ -28,10 +29,11 @@
             cols: [{width:100}, {width:200}]
         });
         $('#demo-2').hygrid({ 
-            url: 'data/table-of-constellations.json',
+            url: '../src/backends/php/test.php?rpp=10&page=1',
             caption:'Bonjour Monde', 
             colhider: true, 
-            cols: [{width:100}, {width:200}]
+            width:1000,
+            cols: [{width:100}, {width:500}, {width:200}]
         });
         /*
         $('#demo-2').hygrid({
@@ -116,10 +118,9 @@
         <table id="demo-2">
             <thead>
                 <tr>
-                    <th>Abbrev.</th>
+                    <th>Id</th>
+                    <th>Code</th>
                     <th>Name</th>
-                    <th>Eng. Name</th>
-                    <th>Alpha Star</th>
                 </tr>
             </thead>
             <tbody></tbody>

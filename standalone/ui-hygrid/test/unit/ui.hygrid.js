@@ -37,8 +37,8 @@
         var testdiv = $('<div />').appendTo('#main');
         testdiv.html(testtable).hygrid({colhider:false});
 
-        equals($('.ui-hygrid').data('hygrid').options.width, 'auto', "with is auto by default");
-        equals($('.ui-hygrid').data('hygrid').options.data,  false, "data is false by default");
+        equals(testdiv.data('hygrid').options.width, 'auto', "with is auto by default");
+        equals(testdiv.data('hygrid').options.data,  false, "data is false by default");
         equals(testdiv.find('tbody').length, 1, "tbody length");
         equals(testdiv.find('tr').length, 3, "tr length");
         equals(testdiv.find('th').length, 2, "th length");

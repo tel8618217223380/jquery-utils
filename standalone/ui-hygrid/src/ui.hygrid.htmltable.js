@@ -39,7 +39,10 @@ $.ui.plugin.add('hygrid', 'htmltable', {
                     }
                 });
         ui.options.total = ui._('tbody').find('tr').length;
+        ui._trigger('gridupdate');
+    },
+    gridupdate: function(e, ui) {
         ui._trigger('resized');
-    }
+    },
 });
 

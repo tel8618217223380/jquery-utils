@@ -18,12 +18,13 @@
     white-space:nowrap;
     text-align:left;
     color:#555;
-    background-color:ThreeDFace;
+    background-color:#ddd;
     border-width:1px;
-    border-color:ThreeDHighlight  ThreeDShadow ThreeDShadow ThreeDLightShadow;
+    border-color:#f4f4f4 #fff #bbb #ccc;
     border-style:solid;
     padding:4px;
     overflow-x:hidden;
+    cursor:default;
 }
 .ui-hygrid table thead th:last-child {
     border-right:0;
@@ -44,22 +45,22 @@
 .ui-hygrid table tbody {}
 .ui-hygrid table tbody tr {}
 .ui-hygrid table tbody tr td {
-    background-color:ThreeDHighlight;
+    background-color:#f6f6f6;
     font-size:80%;
     font-weight:normal;
-    color:ButtonText;
+    color:#333;
     border:0;
-    border-right:1px solid InactiveBorder;
+    border-right:1px solid #e5e5e5;
     padding:4px;
 }
 .ui-hygrid table tbody tr.odd td {
-    background-color:ThreeDLightShadow;
+    background-color:#f0f0f0;
 }
 .ui-hygrid table tbody tr.ui-selected td {
     background-color:#def;
 }
 .ui-hygrid table tfoot td {
-    border-top:1px solid ThreeDShadow;
+    border-top:1px solid #bbb;
     font-size:12px;
     padding:2px 4px;
 }
@@ -76,10 +77,7 @@
     position:absolute;
     font-size:70%;
     font-weight:normal;
-    background-color:ThreeDFace;
-    color:ButtonText;
     border-width:1px;
-    border-color:ThreeDHighlight  ThreeDShadow ThreeDShadow ThreeDLightShadow;
     border-style:solid;
     padding:4px;
     width:120px;
@@ -88,10 +86,8 @@ ul.ui-hygrid-p-colhider-menu li {
     margin:0!important;
     list-style:none!important;
     list-style-type:none!important;
-    border:1px solid ThreeDFace;
 }
 .ui-hygrid-p-colhider-menu li.ui-state-hover {
-    border-color:ThreeDShadow;
 }
 
 .ui-hygrid-p-colhider-menu li label {

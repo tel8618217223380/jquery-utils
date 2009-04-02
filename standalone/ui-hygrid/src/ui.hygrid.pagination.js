@@ -7,6 +7,7 @@
 
   MIT License (http://www.opensource.org/licenses/mit-license.php
 */
+
 (function($){
 
 $.extend($.ui.hygrid.defaults, {
@@ -47,11 +48,6 @@ $.ui.plugin.add('hygrid', 'pagination', {
             if (ui.options.pager) {
                 ui._('pager.pager').appendTo(ui._('toolbarBottom'));
             }
-
-            if (!ui.options.ajax) {
-                ui._trigger('gridupdate');
-            }
-
         }
     },
 
@@ -85,9 +81,8 @@ $.ui.plugin.add('hygrid', 'pagination', {
                     total: ui.options.total
                 }));
             }
+            ui._trigger('resized');
         }
-        //console.log('Pager -- page: %s, rpp: %s, start: %s, end: %s, total: %s', ui.options.page, ui.options.rpp, start, end, ui.options.total);
     }
 });
-
 })(jQuery);

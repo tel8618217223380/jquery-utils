@@ -1,5 +1,5 @@
 /*
-  jQuery ui.hygrid.selectable - @VERSION
+  jQuery ui.hygrid.selectable
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -9,28 +9,24 @@
 
 */
 
-(function($) {if ($.ui.hygrid){
-    $.ui.hygrid.plugins.selectable = {
-        _init: function() {
-            this.options = $.extend({selectable: true}, this.options);
-        },
-        _ready: function() {
-            var widget = this;
-            if (widget.options.selectable) {
-                widget.bind('refreshed.selectable', function() {
-                    widget.ui.body.find('tr').bind('click.selectable', function(){
-                        if ($(this).hasClass('ui-selected')) {
-                            $(this).removeClass('ui-selected');
-                        }
-                        else if (widget.options.selectable == 2) {
-                            $(this).addClass('ui-selected');
-                        }
-                        else {
-                            $(this).addClass('ui-selected').siblings().removeClass('ui-selected');
-                        }
-                    });
-                });
-            }
+$.extend($.ui.hygrid.defaults, {
+    selectable: 2,
+});
+
+$.ui.plugin.add('hygrid', 'selectable', {
+    initialized: function(e, ui) {
+        if (!ui.options.ajax) {
+            ui._('tbody').find('tr').bind('click.selectable', function(){
+                if ($(this).hasClass('ui-selected')) {
+                    $(this).removeClass('ui-selected');
+                }
+                else if (ui.options.selectable == 2) {
+                    $(this).addClass('ui-selected');
+                }
+                else {
+                    $(this).addClass('ui-selected').siblings().removeClass('ui-selected');
+                }
+            });
         }
-    };
-}})(jQuery);
+    }
+});
