@@ -5,7 +5,7 @@
 .ui-hygrid-caption {
     border:0 none;
     font-size:60%;
-    padding:6px;
+    padding:8px 6px;
     text-align:left;
 }
 .ui-hygrid table {
@@ -62,7 +62,7 @@
 .ui-hygrid table tfoot td {
     border-top:1px solid #bbb;
     font-size:12px;
-    padding:2px 4px;
+    padding:4px;
 }
 .ui-hygrid-p-colhider {
 }

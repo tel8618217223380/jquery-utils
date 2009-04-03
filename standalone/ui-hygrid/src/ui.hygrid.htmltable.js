@@ -36,7 +36,7 @@ $.ui.plugin.add('hygrid', 'htmltable', {
                     }
                 });
         ui.options.total = ui._('tbody').find('tr').length;
-        ui._trigger('gridupdated');
+        ui._trigger('gridupdate');
     }
 });
 
