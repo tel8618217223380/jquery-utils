@@ -34,15 +34,9 @@ $.ui.plugin.add('hygrid', 'htmltable', {
                         var th = $('<div />').text($(this).text());
                         $(this).html(th);
                     }
-                    if (ui.options.cols && ui.options.cols[x]) {
-                        ui._applyCellModifiers(thead.find('.ui-hygrid-header').eq(x), ui.options.cols[x], x);
-                    }
                 });
         ui.options.total = ui._('tbody').find('tr').length;
-        ui._trigger('gridupdate');
-    },
-    gridupdate: function(e, ui) {
-        ui._trigger('resized');
-    },
+        ui._trigger('gridupdated');
+    }
 });
 

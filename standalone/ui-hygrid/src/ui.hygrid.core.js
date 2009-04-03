@@ -57,8 +57,14 @@ $.ui.plugin.add('hygrid', 'core', {
     resized: function(e, ui) {
         ui._setGridWidth();
     },
-    gridupdate: function(e, ui) {},
     gridupdated: function(e, ui) {
+        var thead = ui._('thead');
+        thead.find('th.ui-hygrid-header')
+            .each(function(x){
+                if (ui.options.cols && ui.options.cols[x]) {
+                    ui._applyCellModifiers(thead.find('.ui-hygrid-header').eq(x), ui.options.cols[x], x);
+                }
+            });
         ui._trigger('resized');
     },
     coltoggled: function(e, ui) {
