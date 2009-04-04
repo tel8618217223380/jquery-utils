@@ -69,7 +69,6 @@ $.ui.plugin.add('hygrid', 'ajax', {
         if (ui.options.toolbarBottom) {
             ui._('toolbarBottom').attr('colspan', cols);
         }
-        ui._trigger('resized');
     },
     dataloaded: function(e, ui) {
         ui.options.total = parseInt(ui._data.total, 10);

@@ -70,7 +70,7 @@ $.ui.plugin.add('hygrid', 'core', {
     coltoggled: function(e, ui) {
         var $ths = $('th:visible', ui._('thead'));
         $ths.eq($ths.length - 2).css('width', 'auto');
-        ui._trigger('resized', e, ui);
+        ui._trigger('gridupdated');
     }
 });
 

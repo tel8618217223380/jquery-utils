@@ -17,9 +17,8 @@ $.ui.plugin.add('hygrid', 'colhider', {
         ui.insertedRow.append('<td class="ui-hygrid-blank">&nbsp;</td>');
     },
     coltoggled: function(e, ui) {
-        ui._setColOption(ui.toggledCol.data('colindex'), 'hide', ui.toggledCol.is(':hidden'));
         if (ui.options.width == 'auto') {
-            ui._trigger('resized');
+            ui._trigger('gridupdated');
         }
     },
     initialize: function(e, ui) {
@@ -50,13 +49,15 @@ $.ui.plugin.add('hygrid', 'colhider', {
                     .bind('click.colhider', function(){
                         var $self = $(this);
                         var menu  = $self.parents('ul');
-                        ui.toggledCol = ui.col($self.data('colindex'));
+                        var index = $self.data('colindex');
+                        ui.toggledCol = ui.col(index);
                         if ($self.find('input:checked').length > 0) {
                             ui.toggledCol.show();
                         }
                         else {
                             ui.toggledCol.hide();
                         }
+                        ui._setColOption(index, 'hide', ui.toggledCol.is(':hidden'));
                         setTimeout(function() {
                             menu.hide();
                             ui._trigger('coltoggled');

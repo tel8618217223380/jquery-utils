@@ -151,21 +151,21 @@ $.widget('ui.hygrid', {
     _trigger: function(type, e, ui) {
         var ui = ui || this;
         var ev = e  || $.Event(type);
+        if (ui.options.debug) { $.log('hygrid: %s - Event: %o - UI: %o', type, ev, ui); }
         $.ui.plugin.call(this, type, [ev, ui]);
-        if (ui.options.debug) { $.log('hygrid: %s - ', type, ev, ui); }
         return $.widget.prototype._trigger.call(this, type, [ev, ui]);
     }
 });
 
 // These properties are shared accross every hygrid instances
 $.extend($.ui.hygrid, {
-    version: '@VERSION',
+    version:     '@VERSION',
     eventPrefix: 'grid',
-    getter: 'col cells cell row',
+    getter:      'col cells cell row',
     defaults: {
-        width: 'auto', 
-        params: [],
-        debug: true
+        width:   'auto', 
+        params:  [],
+        debug:   false
     },
     cellModifiers: {},
     parsers: {}
