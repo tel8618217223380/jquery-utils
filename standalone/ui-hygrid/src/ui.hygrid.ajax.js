@@ -13,8 +13,8 @@
 
 
 $.ui.hygrid.parsers.json = function(e, ui) {
-    for (x in ui._data.rows) {
-        ui._createRow(ui._data.rows[x].cell);
+    for (x in ui.recievedData.rows) {
+        ui._createRow(ui.recievedData.rows[x].cell);
     }
     ui._trigger('gridupdated');
 };
@@ -52,7 +52,7 @@ $.ui.plugin.add('hygrid', 'ajax', {
                 type:       ui.options.method,
                 url:        ui.options.url,
                 success:    function(data){ 
-                    ui._data = data;
+                    ui.recievedData = data;
                     ui._trigger('dataloaded');
                 },
                 data:       ui.params(),
@@ -71,8 +71,8 @@ $.ui.plugin.add('hygrid', 'ajax', {
         }
     },
     dataloaded: function(e, ui) {
-        ui.options.total = parseInt(ui._data.total, 10);
-        ui.options.page  = parseInt(ui._data.page, 10);
+        ui.options.total = parseInt(ui.recievedData.total, 10);
+        ui.options.page  = parseInt(ui.recievedData.page, 10);
         ui._('tbody').empty();
         $.ui.hygrid.parsers[ui.options.dataType].apply(this, [e, ui]);
         if (ui.options.pager && ui._('pager.pager')) {

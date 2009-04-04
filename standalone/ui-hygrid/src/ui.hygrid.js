@@ -13,7 +13,6 @@
 
 $.log = console.log;
 $.widget('ui.hygrid', {
-    dom: {},
     plugins:  {},
     _init: function() {
         this._trigger('initialize');
@@ -54,7 +53,7 @@ $.widget('ui.hygrid', {
                                     .add(tbody.find('td:nth-child('+ (index+1) +')'));
     },
 
-    row: function(i, a) {
+    row: function(i) {
         return $.isArray(i) && this._createRow(i) 
                             || this._('tbody').find('tr').eq(i);
     },
@@ -105,17 +104,15 @@ $.widget('ui.hygrid', {
         this._trigger('rowinserted');
     },
 
-    _createCell: function(cell, type, modifiers) {
-        var mod = modifiers || $.keys($.ui.hygrid.cellModifiers);
+    _createCell: function(cell, type) {
         var tpl = (type == 'th')? '<{0:s} class="ui-hygrid-header"><div /></{0:s}>': '<{0:s} />';
         var el  = $($.format(tpl, type || 'td'));
-        //console.log(cell, type, mod);
-        return this._applyCellModifiers(el, cell, mod);
+        return this._applyCellModifiers(el, cell);
     },
 
-    _applyCellModifiers: function(el, cell, col, modifiers){
+    _applyCellModifiers: function(el, cell, col){
         var $el = $(el);
-        var mod = modifiers || $.keys($.ui.hygrid.cellModifiers);
+        var mod = $.keys($.ui.hygrid.cellModifiers);
         if ($el.get(0)) {
             var type = $el.get(0).nodeName;
             for (x in mod) {
@@ -165,7 +162,7 @@ $.extend($.ui.hygrid, {
     defaults: {
         width:   'auto', 
         params:  [],
-        debug:   false
+        debug:   true
     },
     cellModifiers: {},
     parsers: {}
