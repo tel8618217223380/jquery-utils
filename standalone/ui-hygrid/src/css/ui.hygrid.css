@@ -99,6 +99,11 @@ ul.ui-hygrid-p-colhider-menu li {
     float:left;
 }
 
+.ui-hygrid table thead button,
+.ui-hygrid table tfoot button {
+    margin:0 4px 0 0;
+    padding:0 4px 3px;
+}
 .ui-hygrid table thead button[disabled],
 .ui-hygrid table tfoot button[disabled] {
     color:#ccc;
@@ -107,4 +112,8 @@ ul.ui-hygrid-p-colhider-menu li {
 .ui-hygrid-pager {
     margin:0 10px;
     font-size:80%;
+}
+.ui-hygrid-rppSelect {
+    font-size:80%!important;
+    margin:0 4px 0 0;
 }

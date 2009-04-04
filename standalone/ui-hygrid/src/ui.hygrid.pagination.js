@@ -14,6 +14,7 @@ $.extend($.ui.hygrid.defaults, {
     pagination: true,
     page: 1,
     rpp: 5,
+    rppSelect: [5, 10, 15, 20],
     pager: '{start:d}-{end:d}/{total:d}, page: {page:d} of {pagetotal:d}'
 });
 
@@ -31,10 +32,25 @@ $.ui.plugin.add('hygrid', 'pagination', {
         if (ui.options.pager) {
             ui._('pager.pager', $('<span class="ui-hygrid-pager" />'));
         }
+        
+        if ($.isArray(ui.options.rppSelect)) {
+            var rppSelect = [];
+            for (x in ui.options.rppSelect) {
+                rppSelect.push($.format('<option value="{0:s}">{0:s}</option>', ui.options.rppSelect[x]));
+            }
+            ui._('pager.rppSelect', $('<select class="ui-hygrid-rppSelect"/>').append(rppSelect.join('')));
+        }
     },
 
     initialized: function(e, ui) { 
         if (ui.options.pagination) {
+
+            if (ui._('pager.rppSelect')) {
+                ui._('pager.rppSelect').bind('change.pagination', function(){
+                    ui.options.rpp = parseInt($(this).val(), 10);
+                    ui._trigger('gridupdate');
+                }).appendTo(ui._('toolbarBottom'));
+            }
 
             ui._('pager.first').bind('click.pagination', function(){
                 ui.options.page = 1;
