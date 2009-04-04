@@ -32,6 +32,11 @@ $.ui.plugin.add('hygrid', 'core', {
                 if (type == 'th' && (this.options.width == 'auto' || col < this.options.cols.length-1)) { 
                     el.find('div').andSelf().width(cell.width);
                 }
+            },
+            format:  function(el, cell, type){ 
+                if (type == 'td') {
+                    el.text($.format(cell.format, el.text())); 
+                }
             }
         });
         if (ui.element.get(0).nodeName == 'TABLE') {
