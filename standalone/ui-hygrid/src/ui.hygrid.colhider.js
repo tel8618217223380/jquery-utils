@@ -13,15 +13,11 @@ $.tpl('colhider.menu',     '<ul class="ui-hygrid-p-colhider-menu ui-helper-hidde
 $.tpl('colhider.menuItem', '<li class="ui-corner-all ui-helper-reset"><label><input type="checkbox" /> {label:s}</label></li>');
 
 $.ui.plugin.add('hygrid', 'colhider', {
-    ui: {
-        menu: '.ui-hygrid-p-colhider-menu'
-    },
     rowinserted: function(e, ui) {
         ui.insertedRow.append('<td class="ui-hygrid-blank">&nbsp;</td>');
     },
-    colhide: function(e, ui) {
-    },
     coltoggled: function(e, ui) {
+        ui._setColOption(ui.toggledCol.data('colindex'), 'hide', ui.toggledCol.is(':hidden'));
         if (ui.options.width == 'auto') {
             ui._trigger('resized');
         }

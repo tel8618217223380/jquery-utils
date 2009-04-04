@@ -11,6 +11,7 @@
 
 (function($) {
 
+$.log = console.log;
 $.widget('ui.hygrid', {
     dom: {},
     plugins:  {},
@@ -99,16 +100,17 @@ $.widget('ui.hygrid', {
             this.insertedRow.append(this._createCell(cell, 'td'));
             cell.label = label; // I manually cache/restore the object's label to avoid having to clone it for each cells
         }
-        this._trigger('rowinsert', [e, this]);
+        this._trigger('rowinsert');
         this.insertedRow.appendTo(this._('tbody'));
-        this._trigger('rowinserted', [e, this]);
+        this._trigger('rowinserted');
     },
 
     _createCell: function(cell, type, modifiers) {
         var mod = modifiers || $.keys($.ui.hygrid.cellModifiers);
         var tpl = (type == 'th')? '<{0:s} class="ui-hygrid-header"><div /></{0:s}>': '<{0:s} />';
         var el  = $($.format(tpl, type || 'td'));
-        return this._applyCellModifiers(el, cell, modifiers);
+        //console.log(cell, type, mod);
+        return this._applyCellModifiers(el, cell, mod);
     },
 
     _applyCellModifiers: function(el, cell, col, modifiers){
@@ -127,6 +129,15 @@ $.widget('ui.hygrid', {
         }
         return el;
     },
+    
+    _setColOption: function(i, o, v) {
+        try {
+            return this.options.cols[i][o] = v;
+        }
+        catch(e) {
+            return false;
+        }
+    },
 
     _getColOptions: function(i, o) {
         try {
@@ -139,8 +150,10 @@ $.widget('ui.hygrid', {
 
     _trigger: function(type, e, ui) {
         var ui = ui || this;
-        $.ui.plugin.call(this, type, [e, ui]);
-        return $.widget.prototype._trigger.call(this, type, e, ui);
+        var ev = e  || $.Event(type);
+        $.ui.plugin.call(this, type, [ev, ui]);
+        if (ui.options.debug) { $.log('hygrid: %s - ', type, ev, ui); }
+        return $.widget.prototype._trigger.call(this, type, [ev, ui]);
     }
 });
 
@@ -151,7 +164,8 @@ $.extend($.ui.hygrid, {
     getter: 'col cells cell row',
     defaults: {
         width: 'auto', 
-        params: []
+        params: [],
+        debug: true
     },
     cellModifiers: {},
     parsers: {}
