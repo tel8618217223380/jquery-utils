@@ -11,20 +11,17 @@
 
 (function($) {
 
-$.log = function() {};
+$.log = function() {
+    try {
+        var args = $.map(arguments, function(v) { return v; });
+        args[0] = $.format('hygrid: {0:s}', args[0]);
+        console.log.apply(this, args);
+    } catch(e) {};
+};
 
 $.widget('ui.hygrid', {
-    count: 0,
     plugins:  {},
     _init: function() {
-        count = 0;
-        $.log = function() {
-            try {
-                var args = $.map(arguments, function(v) { return v; });
-                args[0] = $.format('hygrid[{0:d}]: {1:s}', count, args[0]);
-                console.log.apply(this, args);
-            } catch(e) {};
-        };
         this._trigger('initialize');
         this._trigger('initialized');
     },
