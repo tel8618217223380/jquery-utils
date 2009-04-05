@@ -1,5 +1,5 @@
 /*
-  jQuery ui.hygrid.sortable - @VERSION
+  jQuery ui.hygrid - @VERSION
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -9,6 +9,23 @@
 
 */
 
+$.extend($.ui.hygrid.defaults, {
+    sortable: true,
+});
+
+$.ui.plugin.add('hygrid', 'sortable', {
+    initialize: function(e, ui) {
+        $.extend($.ui.hygrid.cellModifiers, {
+            sortable:  function(el, cell, type){ 
+                if (type == 'th' && !el.hasClass('ui-sortable')) {
+                    el.addClass('ui-sortable')
+                        .prepend('<span class="ui-unsorted ui-icon ui-icon-triangle-2-n-s" />');
+                }
+            }
+        });
+    }
+});
+/*
 (function($) {if ($.ui.hygrid) {
     $.ui.hygrid.plugins.sortable = {
         _init: function() {
@@ -34,3 +51,4 @@
         }
     };
 }})(jQuery);
+*/

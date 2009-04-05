@@ -19,6 +19,7 @@
 	<script type="text/javascript" src="../src/ui.hygrid.ledger.js"></script>
 	<script type="text/javascript" src="../src/ui.hygrid.pagination.js"></script>
 	<script type="text/javascript" src="../src/ui.hygrid.selectable.js"></script>
+	<script type="text/javascript" src="../src/ui.hygrid.sortable.js"></script>
 	<script type="text/javascript" src="../src/ui.hygrid.debug.js"></script>
     <script type="text/javascript">
 
@@ -26,15 +27,19 @@
         $('#demo-1').hygrid({
             caption:'Hello World', 
             colhider: true, 
+            selectable: 2, 
+            debug: ['rowinsert'], 
             width:1000,
-            cols: [{width:100}, {width:200}]
+            cols: [{sortable: true, width:100}, {width:200}]
         });
         $('#demo-2').hygrid({ 
             url: '../src/backends/php/test.php?rpp=10&page=1',
             caption:'Bonjour Monde', 
             colhider: true, 
+            selectable: true, 
+            debug: ['rowinsert'], 
             width:1000,
-            cols: [{width:100, format: '{0:0.2f} $'}, {width:500}, {width:200}]
+            cols: [{sortable: true, width:100, format: '{0:0.2f} $'}, {width:500}, {width:200}]
         });
         /*
         $('#demo-2').hygrid({

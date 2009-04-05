@@ -48,7 +48,6 @@ $.ui.plugin.add('hygrid', 'core', {
             ui._('table',   ui.element.find('table'));
         }
         ui._('wrapper').addClass('ui-hygrid');
-        console.log(ui._('wrapper'));
     },
     initialized: function(e, ui) {
         var cols = ui.options.colhider && ui.cols()+1 || ui.cols();

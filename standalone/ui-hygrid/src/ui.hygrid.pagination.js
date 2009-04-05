@@ -48,28 +48,28 @@ $.ui.plugin.add('hygrid', 'pagination', {
             if (ui._('pager.rppSelect')) {
                 ui._('pager.rppSelect').bind('change.pagination', function(){
                     ui.options.rpp = parseInt($(this).val(), 10);
-                    ui._trigger('gridupdate');
+                    ui._trigger('gridupdated');
                 }).appendTo(ui._('toolbarBottom'));
             }
 
             ui._('pager.first').bind('click.pagination', function(){
                 ui.options.page = 1;
-                ui._trigger('gridupdate');
+                ui._trigger('gridupdated');
             }).appendTo(ui._('toolbarBottom'));
 
             ui._('pager.prev').bind('click.pagination', function(){
                 ui.options.page = ui.options.page > 1 && ui.options.page - 1 || 1;
-                ui._trigger('gridupdate');
+                ui._trigger('gridupdated');
             }).appendTo(ui._('toolbarBottom'));
 
             ui._('pager.next').bind('click.pagination', function(){
                 ui.options.page = ui.options.page + 1;
-                ui._trigger('gridupdate');
+                ui._trigger('gridupdated');
             }).appendTo(ui._('toolbarBottom'));
             
             ui._('pager.last').bind('click.pagination', function(){
                 ui.options.page = Math.max(ui.options.total/ui.options.rpp, 2) + 1;
-                ui._trigger('gridupdate');
+                ui._trigger('gridupdated');
             }).appendTo(ui._('toolbarBottom'));
 
             if (ui.options.pager) {
@@ -78,7 +78,7 @@ $.ui.plugin.add('hygrid', 'pagination', {
         }
     },
 
-    gridupdate: function(e, ui) {
+    gridupdated: function(e, ui) {
         if (ui.options.htmltable) {
             if(ui.options.rpp) {
                 var end   = ui.options.page * ui.options.rpp;

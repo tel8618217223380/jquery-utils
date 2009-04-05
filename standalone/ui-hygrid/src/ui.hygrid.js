@@ -11,10 +11,20 @@
 
 (function($) {
 
-$.log = console.log;
+$.log = function() {};
+
 $.widget('ui.hygrid', {
+    count: 0,
     plugins:  {},
     _init: function() {
+        count = 0;
+        $.log = function() {
+            try {
+                var args = $.map(arguments, function(v) { return v; });
+                args[0] = $.format('hygrid[{0:d}]: {1:s}', count, args[0]);
+                console.log.apply(this, args);
+            } catch(e) {};
+        };
         this._trigger('initialize');
         this._trigger('initialized');
     },
@@ -148,7 +158,9 @@ $.widget('ui.hygrid', {
     _trigger: function(type, e, ui) {
         var ui = ui || this;
         var ev = e  || $.Event(type);
-        if (ui.options.debug) { $.log('hygrid: %s - Event: %o - UI: %o', type, ev, ui); }
+        if (ui.options.debug === true || ($.isArray(ui.options.debug) && ui.options.debug.indexOf(type) > -1)) {
+            $.log('%s (e: %o, ui: %o)', type, ev, ui); 
+        }
         $.ui.plugin.call(this, type, [ev, ui]);
         return $.widget.prototype._trigger.call(this, type, [ev, ui]);
     }
@@ -162,7 +174,7 @@ $.extend($.ui.hygrid, {
     defaults: {
         width:   'auto', 
         params:  [],
-        debug:   true
+        debug:   false
     },
     cellModifiers: {},
     parsers: {}

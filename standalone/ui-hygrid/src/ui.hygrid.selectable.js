@@ -18,15 +18,30 @@ $.ui.plugin.add('hygrid', 'selectable', {
         if (!ui.options.ajax) {
             ui._('tbody').find('tr').bind('click.selectable', function(){
                 if ($(this).hasClass('ui-selected')) {
-                    $(this).removeClass('ui-selected');
-                }
-                else if (ui.options.selectable == 2) {
-                    $(this).addClass('ui-selected');
+                    ui.unselectedRow = $(this);
+                    ui._trigger('rowunselect');
                 }
                 else {
-                    $(this).addClass('ui-selected').siblings().removeClass('ui-selected');
+                    ui.selectedRow = $(this);
+                    ui._trigger('rowselect');
                 }
             });
         }
-    }
+    },
+
+    rowselect: function(e, ui) {
+        if (ui.options.selectable != 2) {
+            ui.selectedRow.siblings().removeClass('ui-selected');
+        }
+        ui.selectedRow.addClass('ui-selected');
+        ui._trigger('rowselected');
+    },
+
+    rowunselect: function(e, ui) {
+        ui.unselectedRow.removeClass('ui-selected');
+        ui._trigger('rowunselected');
+    },
+
+    rowselected: function(e, ui) {},
+    rowunselected: function(e, ui) {}
 });
