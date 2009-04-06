@@ -16,7 +16,22 @@ $.extend($.ui.hygrid.defaults, {
 $.ui.plugin.add('hygrid', 'selectable', {
     initialized: function(e, ui) {
         if (!ui.options.ajax) {
-            ui._('tbody').find('tr').bind('click.selectable', function(){
+            ui._('tbody').addClass('ui-clickable').find('tr').bind('click.selectable', function(){
+                if ($(this).hasClass('ui-selected')) {
+                    ui.unselectedRow = $(this);
+                    ui._trigger('rowunselect');
+                }
+                else {
+                    ui.selectedRow = $(this);
+                    ui._trigger('rowselect');
+                }
+            });
+        }
+    },
+    
+    gridupdated: function(e, ui) {
+        if (ui.options.ajax) {
+            ui._('tbody').addClass('ui-clickable').find('tr').bind('click.selectable', function(){
                 if ($(this).hasClass('ui-selected')) {
                     ui.unselectedRow = $(this);
                     ui._trigger('rowunselect');

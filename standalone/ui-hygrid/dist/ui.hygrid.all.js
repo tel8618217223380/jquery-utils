@@ -517,6 +517,55 @@
     $.extend(strings);
 })(jQuery);
 /*
+ jQuery delayed observer - 0.5
+ http://code.google.com/p/jquery-utils/
+
+ (c) Maxime Haineault <haineault@gmail.com>
+ http://haineault.com
+ 
+ MIT License (http://www.opensource.org/licenses/mit-license.php)
+ 
+ Changelog
+ =========
+ 0.2 using closure, special thanks to Stephen Goguen & Tane Piper.
+ 0.3 now allow object chaining, added license
+ 0.4 code cleanup, added support for other events than keyup, fixed variable scope
+ 0.5 changed filename, included in jquery-utils 
+ 0.6 complete rewrite, same structure but more compact, 
+     now using jquery's "data" method instead of a stack to store data
+     it's now possible to change the condition, by default it's "if new this.val == this.oldval"
+     now using this.each to support multiple observed elements
+*/
+
+(function($){
+    $.extend($.fn, {
+        delayedObserver: function(callback, delay, options){
+            this.each(function(){
+                var $obj    = $(this);
+                var options = options || {};
+                $obj.data('oldval',    $obj.val())
+                    .data('delay',     delay || 0.5)
+                    .data('condition', options.condition || function() {
+                        return ($(this).data('oldval') == $(this).val());
+                    })
+                    .data('callback',  callback)
+                    [(options.event||'keyup')](function(){
+                        if ($obj.data('condition').apply($obj)) return;
+                        else {
+                            if ($obj.data('timer')) clearTimeout($obj.data('timer'));
+                          
+                            $obj.data('timer', setTimeout(function(){
+                                $obj.data('callback').apply($obj);
+                            }, $obj.data('delay') * 1000));
+                          
+                            $obj.data('oldval', $obj.val());
+                        }
+                    });
+                });
+        }
+    });
+})(jQuery);
+/*
   jQuery ui.hygrid.colhider
   http://code.google.com/p/jquery-utils/
 
@@ -527,88 +576,106 @@
 
 */
 
-(function($) {if ($.ui.hygrid){
-    $.tpl('', '<ul class="ui-hygrid-p-colhider-list ui-helper-hidden ui-helper-reset" />');
-    $.tpl('', '<li class="ui-corner-all ui-helper-reset"><label><input id="col-{id:d}" type="checkbox" {c:s} /> {l:s}</label></li>');
+$.tpl('colhider.menu',     '<ul class="ui-hygrid-p-colhider-menu ui-helper-hidden ui-helper-reset ui-widget-content" />');
+$.tpl('colhider.menuItem', '<li class="ui-corner-all ui-helper-reset"><label><input type="checkbox" /> {label:s}</label></li>');
 
-    $.ui.hygrid.plugins.colhider = {
-        _init: function() {
-            this.options = $.extend({colhider: true}, this.options);
-        },
-        _ready: function() {
-            var widget = this;
-            if (widget.options.colhider) {
-            widget._fixCellIndex = widget._fixCellIndex + 1;
-                widget.ui.colhiderlist = $('<ul class="ui-hygrid-p-colhider-list ui-helper-hidden ui-helper-reset" />').prependTo(widget.ui.wrapper);
-                for (x in widget.options.cols) {
-                    var checked = (typeof(widget.options.cols[x].hide) == 'undefined')? 'checked="checked"': '';
-
-                    $($.format('<li class="ui-corner-all ui-helper-reset"><label><input id="col-{id:d}" type="checkbox" {c:s} /> {l:s}</label></li>', 
-                               {id: x, l: widget.options.cols[x].label, c: checked}))
-                        .hover(function(){ $(this).addClass('ui-state-hover');}, 
-                               function(){ $(this).removeClass('ui-state-hover'); })
-                        .bind('change.colhider', function(){
-                            if ($('input:checked', widget.ui.colhiderlist).length >= 1) {
-                                var id  = parseInt($('input', this).attr('id').match(/\d+/gi)[0], 10);
-                                widget.ui.body.find('td').attr('colspan', 1);
-                                widget._col(id)[$('input', this).attr('checked') && 'show' || 'hide']();
-                                widget._visibleCol(widget.ui.body.find('tr:eq(0) td:visible').length-1, true).attr('colspan', 2);
-                                widget._fixCellWidth();
-                            }
-                            else {
-                                $('input', this).attr('checked', true);
-                            }
-                            widget._fixCellWidth();
-                            widget.ui.colhiderlist.hide();
-                        })
-                        .appendTo(widget.ui.colhiderlist);
-                }
-
-                $('<th class="ui-hygrid-p-colhider ui-state-default"><span class="ui-icon ui-icon-gridmenu" /></th>').width(16)
-                    .bind('click.colhider', function() {
-                        widget.ui.colhiderlist.css({
-                            top: widget.ui.body.position().top,
-                            left: $(this).position().left
-                        }).toggle();
-                    })
-                    .hover(function(){ $(this).addClass('ui-state-hover');}, 
-                           function(){ $(this).removeClass('ui-state-hover'); 
-                    }).appendTo(widget.ui.header.find('tr'));
-                    
-
-                widget.bind('refreshed.colhider', function(){
-                    $('tbody tr td:visible', this).filter(':last-child').attr('colspan', 2);
-                });
-            }
+$.ui.plugin.add('hygrid', 'colhider', {
+    rowinserted: function(e, ui) {
+        ui.insertedRow.append('<td class="ui-hygrid-blank">&nbsp;</td>');
+    },
+    coltoggled: function(e, ui) {
+        if (ui.options.width == 'auto') {
+            ui._trigger('gridupdated');
         }
-    };
-}})(jQuery);
+    },
+    initialize: function(e, ui) {
+        $.extend($.ui.hygrid.cellModifiers, {
+            hide:  function(el, cell, type){ 
+                if (cell.hide) { el.hide(); } 
+            }
+        });
+    },
+    initialized: function(e, ui) {
+        ui.options = $.extend({colhider: true}, ui.options);
+        
+        if (ui.options.colhider) {
+            ui._('colhidermenu ', $.tpl('colhider.menu').prependTo(ui._('wrapper')));
+            var thead = ui._('thead');
+            var tbody = ui._('tbody');
+            var menu  = ui._('colhidermenu ');
+            ui._fixCellIndex = ui._fixCellIndex + 1;
+            $th = thead.find('th');
+
+            // create menu
+            // TODO: when input:checked.length == 1 disable clicking
+            $th.slice(0, $th.length).each(function(i){
+                var e   = $.Event();
+                var lbl = $(this).find('div:first-child').text();
+                $.tpl('colhider.menuItem', {label: lbl})
+                    .data('colindex', i)
+                    .bind('click.colhider', function(){
+                        var $self = $(this);
+                        var menu  = $self.parents('ul');
+                        var index = $self.data('colindex');
+                        ui.toggledCol = ui.col(index);
+                        if ($self.find('input:checked').length > 0) {
+                            ui.toggledCol.show();
+                        }
+                        else {
+                            ui.toggledCol.hide();
+                        }
+                        ui._setColOption(index, 'hide', ui.toggledCol.is(':hidden'));
+                        setTimeout(function() {
+                            menu.hide();
+                            ui._trigger('coltoggled');
+                        }, 100); // let the user see the check mark before hiding
+                    })
+                    .find('input')
+                        .attr('checked', !ui._getColOptions(i, 'hide')).end()
+                    .appendTo(menu);
+            });
+            // create button
+            $('<th class="ui-hygrid-p-colhider ui-state-default"><span class="ui-icon ui-icon-gridmenu" />').width(16)
+                .bind('click.colhider', function() {
+                    menu.css({
+                        top: tbody.position().top,
+                        left: $(this).position().left
+                    }).toggle();
+                })
+                .hover(function(){ $(this).addClass('ui-state-hover');}, 
+                       function(){ $(this).removeClass('ui-state-hover'); 
+                }).appendTo(thead.find('tr'));
+        }
+    }
+});
 /*
-  jQuery ui.hygrid.ledger - 0.0.1
+  jQuery ui.hygrid.ledger
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
   http://haineault.com
 
   MIT License (http://www.opensource.org/licenses/mit-license.php
-
 */
+(function($){
 
-(function($) {if ($.ui.hygrid) {
-    $.ui.hygrid.plugins.ledger = {
-        _init: function() {
-            this.options = $.extend({ledger: true}, this.options);
-        },
-        _ready: function() {
-            var widget = this;
-            widget.bind('refreshed.ledger', function() {
-                widget.ui.body.find('tr')
-                    .filter(':odd').addClass('odd').end()
-                    .filter(':even').addClass('even');
-            });
-        }
-    };
-}})(jQuery);
+function applyLedger(ui) {
+    ui._('tbody').find('tr')
+        .filter(':odd').addClass('odd').end()
+        .filter(':even').addClass('even');
+}
+
+$.ui.hygrid.defaults.ledger = true;
+$.ui.plugin.add('hygrid', 'ledger', {
+    initialized: function(e, ui) { 
+        applyLedger(ui);
+    },
+    dataloaded: function(e, ui) { 
+        applyLedger(ui);
+    }
+});
+
+})(jQuery);
 /*
   jQuery ui.hygrid.resizable - 0.0.1
   http://code.google.com/p/jquery-utils/
@@ -640,7 +707,7 @@
     };
 }})(jQuery);
 /*
-  jQuery ui.hygrid.selectable - 0.0.1
+  jQuery ui.hygrid.selectable
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -650,42 +717,84 @@
 
 */
 
-(function($) {if ($.ui.hygrid){
-    $.ui.hygrid.plugins.selectable = {
-        _init: function() {
-            this.options = $.extend({selectable: true}, this.options);
-        },
-        _ready: function() {
-            var widget = this;
-            if (widget.options.selectable) {
-                widget.bind('refreshed.selectable', function() {
-                    widget.ui.body.find('tr').bind('click.selectable', function(){
-                        if ($(this).hasClass('ui-selected')) {
-                            $(this).removeClass('ui-selected');
-                        }
-                        else if (widget.options.selectable == 2) {
-                            $(this).addClass('ui-selected');
-                        }
-                        else {
-                            $(this).addClass('ui-selected').siblings().removeClass('ui-selected');
-                        }
-                    });
-                });
-            }
+$.extend($.ui.hygrid.defaults, {
+    selectable: 2,
+});
+
+$.ui.plugin.add('hygrid', 'selectable', {
+    initialized: function(e, ui) {
+        if (!ui.options.ajax) {
+            ui._('tbody').addClass('ui-clickable').find('tr').bind('click.selectable', function(){
+                if ($(this).hasClass('ui-selected')) {
+                    ui.unselectedRow = $(this);
+                    ui._trigger('rowunselect');
+                }
+                else {
+                    ui.selectedRow = $(this);
+                    ui._trigger('rowselect');
+                }
+            });
         }
-    };
-}})(jQuery);
+    },
+    
+    gridupdated: function(e, ui) {
+        if (ui.options.ajax) {
+            ui._('tbody').addClass('ui-clickable').find('tr').bind('click.selectable', function(){
+                if ($(this).hasClass('ui-selected')) {
+                    ui.unselectedRow = $(this);
+                    ui._trigger('rowunselect');
+                }
+                else {
+                    ui.selectedRow = $(this);
+                    ui._trigger('rowselect');
+                }
+            });
+        }
+    },
+
+    rowselect: function(e, ui) {
+        if (ui.options.selectable != 2) {
+            ui.selectedRow.siblings().removeClass('ui-selected');
+        }
+        ui.selectedRow.addClass('ui-selected');
+        ui._trigger('rowselected');
+    },
+
+    rowunselect: function(e, ui) {
+        ui.unselectedRow.removeClass('ui-selected');
+        ui._trigger('rowunselected');
+    },
+
+    rowselected: function(e, ui) {},
+    rowunselected: function(e, ui) {}
+});
 /*
-  jQuery ui.hygrid.sortable - 0.0.1
+  jQuery ui.hygrid.sortable
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
   http://haineault.com
 
   MIT License (http://www.opensource.org/licenses/mit-license.php
-
 */
 
+$.extend($.ui.hygrid.defaults, {
+    sortable: true,
+});
+
+$.ui.plugin.add('hygrid', 'sortable', {
+    initialize: function(e, ui) {
+        $.extend($.ui.hygrid.cellModifiers, {
+            sortable:  function(el, cell, type){ 
+                if (type == 'th' && !el.hasClass('ui-sortable')) {
+                    el.addClass('ui-sortable')
+                        .prepend('<span class="ui-unsorted ui-icon ui-icon-triangle-2-n-s" />');
+                }
+            }
+        });
+    }
+});
+/*
 (function($) {if ($.ui.hygrid) {
     $.ui.hygrid.plugins.sortable = {
         _init: function() {
@@ -706,10 +815,12 @@
                 }
             }
         },
-        _ready: function() {
+        _params: function() {
+            
         }
     };
 }})(jQuery);
+*/
 /*
   jQuery ui.hygrid - 0.0.1
   http://code.google.com/p/jquery-utils/
@@ -719,188 +830,174 @@
 
   MIT License (http://www.opensource.org/licenses/mit-license.php
 
-  Dependencies
-  ------------
-  - jquery.utils.js
-  - jquery.strings.js
-  - jquery.ui.js
-
 */
 
 (function($) {
-    var debug = true;
-    
-    $.tpl('hygrid.table',   '<table class="ui-widget" cellpadding="0" cellspacing="0" summary=""><thead /><tbody /><tfoot /></table>');
-    $.tpl('hygrid.toolbar', '<div class="ui-hygrid-toolbar" />');
-    $.tpl('hygrid.pager',   '<div class="ui-hygrid-pager" />');
-    $.tpl('hygrid.search',  '<div class="ui-hygrid-search" />');
 
-    $.widget('ui.hygrid', {
-        params: {},
-        bind: function(eName, callback) {      
-            return this.ui.wrapper.bind(eName, callback);
-        },
+$.log = function() {
+    try {
+        var args = $.map(arguments, function(v) { return v; });
+        args[0] = $.format('hygrid: {0:s}', args[0]);
+        console.log.apply(this, args);
+    } catch(e) {};
+};
 
-        _init: function() {
-            var widget = this;
-            this.ui = {};
-            $(this.element).each(function(){
-                widget._createhygrid(this);
-            });
-        },
-        _fixCellIndex: 1,
-        _fixCellWidth: function() {
-            var $ths = $('th:visible', this.ui.header);
-            $ths.eq($ths.length - this._fixCellIndex).css('width', 'auto');
-        },
+$.widget('ui.hygrid', {
+    plugins:  {},
+    _init: function() {
+        this._trigger('initialize');
+        this._trigger('initialized');
+    },
 
-        _createhygrid: function(el){
-            this.ui.wrapper = $(el).addClass('ui-hygrid')
-                                .width(this.options.width)
-                                .data('hygrid', this)
-                                .bind('refresh.hygrid', $.ui.hygrid.events.refresh);
-
-            this.ui.table = $.tpl('hygrid.table')
-                              .width(this.options.width)
-                              .appendTo(this.ui.wrapper);
-
-            this._pluginsCall('_init');
-            this._createhygridHeader();
-            this._createhygridBody();
-            this._pluginsCall('_ready');
-            this.ui.wrapper.trigger('refresh');
-        },
-
-        _pluginsCall: function(method, args){
-            for (x in $.ui.hygrid.plugins) {
-                try {
-                    $.ui.hygrid.plugins[x][method].apply(this, args || []);
-                } catch(e) {};
+    params: function() {
+        o = {};
+        for (x in this.options.params) {
+            var param = this.options.params[x];
+            if (this.options[param]) {
+                o[param] = this.options[param];
             }
-        },
-
-        _createhygridHeader: function(){
-            var widget = this;
-            var tr = $('<tr />');
-            this.ui.header = this.ui.table.find('thead');
-            for (x in this.options.cols) {
-                tr.append(widget._createCell(this.options.cols[x], 'th'));
-            }
-            this.ui.header.append(tr);
-        },
-
-        _createhygridBody: function() {
-            this.ui.body  = this.ui.table.find('tbody');
-        },
-
-        _createRow: function(id, cells) {
-            var tr = $('<tr />');
-            for (i in cells) {
-                var cell = this.options.cols[i]; var label = cell.label; cell.label = cells[i];
-                tr.append(this._createCell(cell, 'td'));
-                cell.label = label; // I manually cache/restore the object's label to avoid having to clone it for each cells
-            }
-            tr.appendTo(this.ui.body);
-        },
-
-        _createCell: function(cell, type, modifiers) {
-            var mod = modifiers || $.keys($.ui.hygrid.cellModifiers);
-            var el  = $($.format('<{0:s}><div /></{0:s}>', type || 'td'));
-            for (x in mod) {
-                try {
-                    $.ui.hygrid.cellModifiers[mod[x]]
-                        .apply(this, [el, cell, type && type.toLowerCase() || 'td']);
-                } catch(e) {}
-            }
-            if (type == 'th') {
-                el.addClass('ui-state-default');
-            }
-            return el;
-        },
-
-        _visibleCol: function(index, excludeHeader) {
-            // There is most likely a more efficient way to achieve this..
-            var $tds = $(this.ui.body.find('tr').map(function(){
-                return $(this).find('td:visible').get(index);
-            }));
-            return excludeHeader 
-                    && $tds
-                    || $(this.ui.header.find('tr').map(function(){
-                           return $(this).find('th:visible').get(index);
-                       })).add($tds);
-        },
-
-        _col: function(index, excludeHeader) {
-            return this.ui.header.find('th:nth-child('+ (index+1) +')')
-                    .add(this.ui.body.find('td:nth-child('+ (index+1) +')'));
-        },
-
-        _loadData: function() {
-            var widget = this;
-            $.ajax({
-                type:       widget.options.method,
-                url:        widget.options.url,
-                data:       '', // params,
-                dataType:   widget.options.dataType,
-                success:    function(){ 
-                    $.ui.hygrid.parsers[widget.options.dataType].apply(widget, arguments); 
-                    widget.ui.wrapper.trigger('refreshed')
-                },
-                error: widget.options.onError
-            });
         }
-    });
+        return o;
+    },
 
-    // These properties are shared accross every instances of hygrid
-    $.extend($.ui.hygrid, {
-        plugins: {},
-        defaults: {
-            width:    500,
-            method:   'get',
-            dataType: 'json',
-            onError: function(xr, ts, et) {
-                try { $.log(xr, ts, et); } catch (e) {};
-            }
-        },
-        events: {
-            refreshed: function(){},
-            refresh: function(e){
-                widget = $(this).data('hygrid');
-                widget._fixCellWidth();
-                widget._loadData();
-            }
-        },
+    '_': function() {
+        if (arguments.length == 1) {
+            return this._getData(arguments[0]);
+        }
+        else {
+            return this._setData(arguments[0], arguments[1]);
+        }
+    },
 
-        /* parsers are used to extend data types (json/xml/..)
-         * the parser are basically callback function for jQuery.ajax's onSuccess
-         * http://docs.jquery.com/Ajax/jQuery.ajax#options
-         * */
-        parsers: {
-            json: function(data) {
-                for (r in data.rows) {
-                    try { this._createRow(data.rows[r].id, data.rows[r].cell); } catch(e) {};
+    cols: function(visible) {
+        var length = this._('tbody').find('tr:eq(0) td').length
+        return this.options.cols > length && this.options.length || length;
+    },
+    
+    // Returns all element from a given column index
+    col: function(index, excludeHeader) {
+        var tbody = this._('tbody');
+        var thead = this._('thead');
+        return excludeHeader && tbody.find('td:nth-child('+ (index+1) +')')
+                             || thead.find('th:nth-child('+ (index+1) +')')
+                                    .add(tbody.find('td:nth-child('+ (index+1) +')'));
+    },
+
+    row: function(i) {
+        return $.isArray(i) && this._createRow(i) 
+                            || this._('tbody').find('tr').eq(i);
+    },
+
+    cell: function(x, y, visible) {
+        var tbody = this._('tbody');
+        return visible && tbody.find('tr:visible').eq(y).find('td:visible').eq(x)
+                       || tbody.find('tr').eq(y).find('td').eq(x);
+    },
+
+    cells: function(visibleOnly) {
+        var tbody = this._('tbody');
+        return visibleOnly && tbody.find('td') || tbody.find('td:visible');
+    },
+    
+
+    _setGridWidth: function(){
+        var wrapper = this._('wrapper');
+        var table   = this._('table');
+        switch (this.options.width || 'auto') {
+            case 'auto':
+                wrapper.width(table.width());
+            break;
+            case 'fill':
+                var w = wrapper.parent().width();
+                wrapper.width(w)
+                table.width(w);
+            break;
+            default:
+                wrapper.width(this.options.width);
+                table.width(this.options.width);
+            break;
+        };
+    },
+
+    _createRow: function(cells) {
+        var e  = $.Event();
+        this.insertedRow = $('<tr />');
+        for (i in cells) {
+            var cell = this.options.cols && this.options.cols[i] || {}; 
+            var label = cell.label; 
+            cell.label = cells[i];
+            this.insertedRow.append(this._createCell(cell, 'td'));
+            cell.label = label; // I manually cache/restore the object's label to avoid having to clone it for each cells
+        }
+        this._trigger('rowinsert');
+        this.insertedRow.appendTo(this._('tbody'));
+        this._trigger('rowinserted');
+    },
+
+    _createCell: function(cell, type) {
+        var tpl = (type == 'th')? '<{0:s} class="ui-hygrid-header"><div /></{0:s}>': '<{0:s} />';
+        var el  = $($.format(tpl, type || 'td'));
+        return this._applyCellModifiers(el, cell);
+    },
+
+    _applyCellModifiers: function(el, cell, col){
+        var $el = $(el);
+        var mod = $.keys($.ui.hygrid.cellModifiers);
+        if ($el.get(0)) {
+            var type = $el.get(0).nodeName;
+            for (x in mod) {
+                if (cell[mod[x]]) {
+                    try {
+                        $.ui.hygrid.cellModifiers[mod[x]]
+                            .apply(this, [$el, cell, type && type.toLowerCase() || 'td', col]);
+                    } catch(e) {}
                 }
             }
-        },
-
-
-        /* cellModifiers are used extend cell options
-         *
-         * Modifiers must be functions scoped with the hygrid widget.
-         * So "this" refers to the current instance of hygrid (usually refered as "widget")
-         *
-         * Modifiers will recieve the following arguments:
-         *
-         *  @el    object[jQuery]   Actual cell element enclosed in a jQuery instance
-         *  @cell  object           Cell options (specified with widget.options.cols)
-         *  @type  string           Node type of the cell ("td" or "th") 
-         *
-         * */
-        cellModifiers: {
-            label: function(el, cell, type){ el.find('div').text(cell.label); },
-            align: function(el, cell, type){ el.find('div').andSelf().css('text-align', cell.align); },
-            width: function(el, cell, type){ if (type == 'th') { el.css('width', cell.width); } },
-            hide:  function(el, cell, type){ if (cell.hide) { el.hide(); } }
         }
-    });
+        return el;
+    },
+    
+    _setColOption: function(i, o, v) {
+        try {
+            return this.options.cols[i][o] = v;
+        }
+        catch(e) {
+            return false;
+        }
+    },
+
+    _getColOptions: function(i, o) {
+        try {
+            return this.options.cols[i][o];
+        }
+        catch(e) {
+            return false;
+        }
+    },
+
+    _trigger: function(type, e, ui) {
+        var ui = ui || this;
+        var ev = e  || $.Event(type);
+        if (ui.options.debug === true || ($.isArray(ui.options.debug) && ui.options.debug.indexOf(type) > -1)) {
+            $.log('%s (e: %o, ui: %o)', type, ev, ui); 
+        }
+        $.ui.plugin.call(this, type, [ev, ui]);
+        return $.widget.prototype._trigger.call(this, type, [ev, ui]);
+    }
+});
+
+// These properties are shared accross every hygrid instances
+$.extend($.ui.hygrid, {
+    version:     '0.0.1',
+    eventPrefix: 'grid',
+    getter:      'col cells cell row',
+    defaults: {
+        width:   'auto', 
+        params:  [],
+        debug:   false
+    },
+    cellModifiers: {},
+    parsers: {}
+});
+
 })(jQuery);

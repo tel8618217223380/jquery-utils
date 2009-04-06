@@ -43,77 +43,74 @@ $.ui.plugin.add('hygrid', 'pagination', {
     },
 
     initialized: function(e, ui) { 
-        if (ui.options.pagination) {
-
-            if (ui._('pager.rppSelect')) {
-                ui._('pager.rppSelect').bind('change.pagination', function(){
-                    ui.options.rpp = parseInt($(this).val(), 10);
-                    ui._trigger('gridupdated');
-                }).appendTo(ui._('toolbarBottom'));
-            }
-
-            ui._('pager.first').bind('click.pagination', function(){
-                ui.options.page = 1;
-                ui._trigger('gridupdated');
+        var e = ui.options.htmltable && 'gridupdated' || 'gridrefresh';
+        if (ui._('pager.rppSelect')) {
+            ui._('pager.rppSelect').bind('change.pagination', function(){
+                ui.options.rpp = parseInt($(this).val(), 10);
+                ui._trigger(e);
             }).appendTo(ui._('toolbarBottom'));
+        }
 
-            ui._('pager.prev').bind('click.pagination', function(){
-                ui.options.page = ui.options.page > 1 && ui.options.page - 1 || 1;
-                ui._trigger('gridupdated');
-            }).appendTo(ui._('toolbarBottom'));
+        ui._('pager.first').bind('click.pagination', function(){
+            ui.options.page = 1;
+            ui._trigger(e);
+        }).appendTo(ui._('toolbarBottom'));
 
-            ui._('pager.next').bind('click.pagination', function(){
-                ui.options.page = ui.options.page + 1;
-                ui._trigger('gridupdated');
-            }).appendTo(ui._('toolbarBottom'));
-            
-            ui._('pager.last').bind('click.pagination', function(){
-                ui.options.page = Math.max(ui.options.total/ui.options.rpp, 2) + 1;
-                ui._trigger('gridupdated');
-            }).appendTo(ui._('toolbarBottom'));
+        ui._('pager.prev').bind('click.pagination', function(){
+            ui.options.page = ui.options.page > 1 && ui.options.page - 1 || 1;
+            ui._trigger(e);
+        }).appendTo(ui._('toolbarBottom'));
 
-            if (ui.options.pager) {
-                ui._('pager.pager').appendTo(ui._('toolbarBottom'));
-            }
+        ui._('pager.next').bind('click.pagination', function(){
+            ui.options.page = ui.options.page + 1;
+            ui._trigger(e);
+        }).appendTo(ui._('toolbarBottom'));
+        
+        ui._('pager.last').bind('click.pagination', function(){
+            ui.options.page = Math.max(ui.options.total/ui.options.rpp, 2);
+            ui._trigger(e);
+        }).appendTo(ui._('toolbarBottom'));
+
+        if (ui.options.pager) {
+            ui._('pager.pager').appendTo(ui._('toolbarBottom'));
         }
     },
 
     gridupdated: function(e, ui) {
-        if (ui.options.htmltable) {
-            if(ui.options.rpp) {
-                var end   = ui.options.page * ui.options.rpp;
-                var start = (ui.options.page *  ui.options.rpp) - ui.options.rpp;
-                var $tr = ui._('tbody').find('tr');
-                
-                ui._('pager.next').attr('disabled', false);
-                ui._('pager.prev').attr('disabled', false);
-                ui._('pager.first').attr('disabled', false);
-                ui._('pager.last').attr('disabled', false);
+        if(ui.options.rpp) {
+            var end   = ui.options.page * ui.options.rpp;
+            var start = (ui.options.page *  ui.options.rpp) - ui.options.rpp;
+            var $tr = ui._('tbody').find('tr');
+            
+            ui._('pager.next').attr('disabled', false);
+            ui._('pager.prev').attr('disabled', false);
+            ui._('pager.first').attr('disabled', false);
+            ui._('pager.last').attr('disabled', false);
 
-                if (start == 0) {
-                    ui._('pager.prev').attr('disabled', true);
-                    ui._('pager.first').attr('disabled', true);
-                }
-                else if (end > $tr.length) {
-                    ui._('pager.next').attr('disabled', true);
-                    ui._('pager.last').attr('disabled', true);
-                    start = $tr.length - ui.options.rpp;
-                    end = ui.options.total;
-                }
-
-                $tr.hide().slice(start, end).show();
+            if (start == 0) {
+                ui._('pager.prev').attr('disabled', true);
+                ui._('pager.first').attr('disabled', true);
             }
-            if (ui.options.pager) {
-                ui._('pager.pager').text($.format(ui.options.pager, {
-                    page: ui.options.page,
-                    pagetotal: Math.max(ui.options.total/ui.options.rpp, 2) + 1,
-                    start: start,
-                    end: end,
-                    total: ui.options.total
-                }));
+            else if ((ui.options.htmltable && end > ui.options.total) || end >= ui.options.total) {
+                ui._('pager.next').attr('disabled', true);
+                ui._('pager.last').attr('disabled', true);
+                start = ui.options.total - ui.options.rpp;
+                end = ui.options.total;
             }
-            ui._trigger('resized');
         }
+        if (ui.options.pager) {
+            ui._('pager.pager').text($.format(ui.options.pager, {
+                page: ui.options.page,
+                pagetotal: Math.max(ui.options.total/ui.options.rpp, 2) + 1,
+                start: start,
+                end: end,
+                total: ui.options.total
+            }));
+        }
+        if (ui.options.htmltable) {
+            $tr.hide().slice(start, end).show();
+        }
+        ui._trigger('resized');
     }
 });
 })(jQuery);

@@ -9,6 +9,7 @@ modules:
     depends:
       - src: src/jquery.utils.js
       - src: src/jquery.strings.js
+      - src: src/jquery.delayedObserver.js
       - src: standalone/ui-hygrid/src/ui.hygrid.colhider.js
       - src: standalone/ui-hygrid/src/ui.hygrid.ledger.js
       - src: standalone/ui-hygrid/src/ui.hygrid.resizable.js
@@ -20,6 +21,7 @@ modules:
     depends:
       - src: src/jquery.utils.js
       - src: src/jquery.strings.js
+      - src: src/jquery.delayedObserver.js
 
 copy: 
   - src: demo/themes/default/images/*.png
@@ -29,13 +31,15 @@ copy:
   - src: standalone/ui-hygrid/src/img/*
     dest: standalone/ui-hygrid/dist/themes/default/images/
   - src: src/jquery.ui.all.js
-    dest: standalone/ui-hygrid/page/jquery.ui.all.js
+    dest: standalone/ui-hygrid/src/jquery.ui.all.js
   - src: src/jquery.utils.js
-    dest: standalone/ui-hygrid/page/jquery.utils.js
+    dest: standalone/ui-hygrid/src/jquery.utils.js
   - src: src/jquery.anchorHandler.js
-    dest: standalone/ui-hygrid/page/jquery.anchorHandler.js
+    dest: standalone/ui-hygrid/src/jquery.anchorHandler.js
+  - src: src/jquery.delayedObserver.js
+    dest: standalone/ui-hygrid/src/jquery.delayedObserver.js
   - src: src/jquery.strings.js
-    dest: standalone/ui-hygrid/page/jquery.strings.js
+    dest: standalone/ui-hygrid/src/jquery.strings.js
 
 merge:
   - dest: standalone/ui-hygrid/dist/themes/default/ui.hygrid.css
