@@ -22,7 +22,7 @@
 (function($){
     $.extend($.fn, {
         delayedObserver: function(callback, delay, options){
-            this.each(function(){
+            return this.each(function(){
                 var $obj    = $(this);
                 var options = options || {};
                 $obj.data('oldval',    $obj.val())
