@@ -16,11 +16,6 @@ $.ui.plugin.add('hygrid', 'colhider', {
     rowinserted: function(e, ui) {
         ui.insertedRow.append('<td class="ui-hygrid-blank">&nbsp;</td>');
     },
-    coltoggled: function(e, ui) {
-        if (ui.options.width == 'auto') {
-            ui._trigger('gridupdated');
-        }
-    },
     initialize: function(e, ui) {
         $.extend($.ui.hygrid.cellModifiers, {
             hide:  function(el, cell, type){ 
@@ -43,7 +38,7 @@ $.ui.plugin.add('hygrid', 'colhider', {
             // TODO: when input:checked.length == 1 disable clicking
             $th.slice(0, $th.length).each(function(i){
                 var e   = $.Event();
-                var lbl = $(this).find('div:first-child').text();
+                var lbl = $(this).text();
                 $.tpl('colhider.menuItem', {label: lbl})
                     .data('colindex', i)
                     .bind('click.colhider', function(){
@@ -51,11 +46,12 @@ $.ui.plugin.add('hygrid', 'colhider', {
                         var menu  = $self.parents('ul');
                         var index = $self.data('colindex');
                         ui.toggledCol = ui.col(index);
-                        if ($self.find('input:checked').length > 0) {
-                            ui.toggledCol.show();
+                        //console.log(index, ui.col(index));
+                        if ($self.find('input').is(':checked')) {
+                            ui.toggledCol.hide();
                         }
                         else {
-                            ui.toggledCol.hide();
+                            ui.toggledCol.show();
                         }
                         ui._setColOption(index, 'hide', ui.toggledCol.is(':hidden'));
                         setTimeout(function() {

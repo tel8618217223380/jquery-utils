@@ -61,7 +61,7 @@ $.ui.plugin.add('hygrid', 'core', {
     resized: function(e, ui) {
         ui._setGridWidth();
     },
-    gridupdated: function(e, ui) {
+    gridrefresh: function(e, ui) {
         var thead = ui._('thead');
         thead.find('th.ui-hygrid-header')
             .each(function(x){
@@ -70,11 +70,6 @@ $.ui.plugin.add('hygrid', 'core', {
                 }
             });
         ui._trigger('resized');
-    },
-    coltoggled: function(e, ui) {
-        var $ths = $('th:visible', ui._('thead'));
-        $ths.eq($ths.length - 2).css('width', 'auto');
-        ui._trigger('gridupdated');
     }
 });
 

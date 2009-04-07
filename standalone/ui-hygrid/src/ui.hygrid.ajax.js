@@ -39,7 +39,6 @@ $.ui.plugin.add('hygrid', 'ajax', {
             ui._('thead', (table.find('thead').get(0) && table.find('thead') || $('<thead/>').prependTo(table)));
             ui._('tbody', (table.find('tbody').get(0) && table.find('tbody') || $('<tbody/>').appendTo(table)));
             ui._('thead').find('th').disableSelection().addClass('ui-state-default ui-hygrid-header');
-            ui._trigger('gridrefresh');
         }
         else {
             ui.options.ajax = false;

@@ -62,6 +62,9 @@
 .ui-hygrid table tbody tr.ui-selected td {
     background-color:#def;
 }
+.ui-hygrid table tbody tr.ui-highlight td {
+    background-color:#ffc;
+}
 .ui-hygrid table tfoot td {
     border-top:1px solid #bbb;
     font-size:12px;

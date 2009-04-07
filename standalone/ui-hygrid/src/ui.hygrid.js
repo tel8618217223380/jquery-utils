@@ -11,19 +11,12 @@
 
 (function($) {
 
-$.log = function() {
-    try {
-        var args = $.map(arguments, function(v) { return v; });
-        args[0] = $.format('hygrid: {0:s}', args[0]);
-        console.log.apply(this, args);
-    } catch(e) {};
-};
-
 $.widget('ui.hygrid', {
     plugins:  {},
     _init: function() {
         this._trigger('initialize');
         this._trigger('initialized');
+        this._trigger('gridrefresh');
     },
 
     params: function() {
@@ -155,8 +148,19 @@ $.widget('ui.hygrid', {
     _trigger: function(type, e, ui) {
         var ui = ui || this;
         var ev = e  || $.Event(type);
-        if (ui.options.debug === true || ($.isArray(ui.options.debug) && ui.options.debug.indexOf(type) > -1)) {
-            $.log('%s (e: %o, ui: %o)', type, ev, ui); 
+        if (ui.options.debug === true || ui.options.trace === true || ($.isArray(ui.options.debug) && ui.options.debug.indexOf(type) > -1)) {
+            try {
+                console.groupCollapsed('hygrid: %s', type); 
+                console.log('Event: %o', ev); 
+                console.log('Widget: %o', ui); 
+                if (ui.options.trace) {
+                    console.group('Traceback'); 
+                    console.log(ui._trigger.caller.toString());
+                    console.trace();
+                    console.groupEnd('Traceback'); 
+                }
+                console.groupEnd('hygrid: %s', type); 
+            } catch(e) {};
         }
         $.ui.plugin.call(this, type, [ev, ui]);
         return $.widget.prototype._trigger.call(this, type, [ev, ui]);

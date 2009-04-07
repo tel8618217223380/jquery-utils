@@ -12,16 +12,30 @@ $.extend($.ui.hygrid.defaults, {
     search: true,
 });
 
+$.tpl('hygrid.searchInput', '<input class="ui-hygrid-search ui-corner-all" type="text" value="" />');
+
 $.ui.plugin.add('hygrid', 'search', {
     initialize: function(e, ui) {
-        ui._('search.input', $('<input class="ui-hygrid-search ui-corner-all" type="text" value="" />'));
+        ui._('search.input', $.tpl('hygrid.searchInput'));
     },
 
     initialized: function(e, ui) {
-        ui._('search.input').prependTo(ui._('toolbarBottom'));
-          //.delayedObserver(function(a, b){
-          //    console.log(this, a, b);
-          //}, 400)
-          //.prependTo(ui._('toolbarBottom'));
+        ui._('search.input')
+            .delayedObserver(function(){
+                ui.searchString = this.val();
+                ui._trigger('startsearch');
+            }, 0.5)
+            .prependTo(ui._('toolbarBottom'));
+    },
+    searchstart: function(e, ui) {
+        $td = ui._('tbody').find('td');
+        $td.css('font-weight', 'normal').parent().removeClass('ui-highlight');
+        ui.searchResult = $td.filter(':icontains('+ ui.searchString +')').css('font-weight', 'bold').parent().addClass('ui-highlight');
+        ui._('tbody').find('tr.ui-highlight:first').prevAll().hide();
+        ui._trigger('searchend');
+    },
+    searchend: function(e, ui) {
+    
     }
+
 });
